@@ -37,3 +37,31 @@ The web app is made by [@yymao](https://yymao.github.io/).
    ```
    python2 -m SimpleHTTPServer
    ```
+
+## Format of `data.json`
+
+- `data.json` should be a json object with three attributes `categories`, `nodes`, and `links`. Each of them should be an array of objects.
+- Objects in the `categories` array should have the `name` attribute.
+- Objects in the `nodes` array should have (1) the `name` attribute, (2) the `category` attribute that indicates the category this node belongs to, using the corresponding index as in the `categories` array, and (3) the `index` attribute that indicates the index of this node within its category.
+- Objects in the `links` array should have the `left` and `right` attributes, indicating the two nodes it links together. Both `left` and `right` should use the corresponding indices as in the `nodes` array.
+
+Here's a minimal example:
+```json
+{
+  "categories": 
+  [
+    {"name": "Model"}, 
+    {"name": "Probe"}
+  ], 
+  
+  "nodes": 
+  [
+    {"category": 0, "index": 0, "name": "SIDM"}, 
+    {"category": 1, "index": 0, "name": "Halo Density Profile"}
+  ], 
+  
+  "links": [
+    {"left": 0, "right": 1}, 
+  ]
+}
+```
