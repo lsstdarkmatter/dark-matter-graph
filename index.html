@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Dark Matter Graph</title>
+  <style>
+    #canvas svg {
+      margin: 0 auto;
+      display: block;
+    }
+
+    .cattext {
+      font-weight: bold;
+    }
+
+    .node {
+      fill: #555;
+      fill-opacity: 0.05;
+      stroke: #555;
+      stroke-width: 1px;
+    }
+
+    .link {
+      fill: none;
+      stroke: #555;
+      stroke-width: 2px;
+    }
+
+    rect.active {
+      fill: #36C;
+      fill-opacity: 0.2;
+      stroke: #36C;
+      stroke-width: 1px;
+    }
+
+    path.active {
+      stroke: #36C;
+      stroke-width: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="canvas"></div>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script>
+    var dims = { 'width': 300, 'wpad': 50, 'height': 50, 'hpad': 10, 'top': 50 };
+
+    dims.width_padded = dims.width + dims.wpad * 2;
+    dims.height_padded = dims.height + dims.hpad * 2;
+    dims.half_height = dims.height * 0.5;
+    dims.half_width_padded = dims.width_padded * 0.5;
+
+    d3.json('data/data.json', function (error, d) {
+      if (error) throw error;
+
+      dims.n_cols = d.categories.length;
+      dims.n_rows = d.categories
+        .map(c => c.count)
+        .reduce((max, cur) => Math.max(max, cur), 0);
+
+      dims.height_total = dims.n_rows * dims.height_padded;
+      dims.width_total = dims.n_cols * dims.width_padded;
+      dims.hpads = d.categories.map(c => dims.height_total / 2.0 / c.count - dims.half_height);
+      dims.heights_padded = d.categories.map(c => dims.height_total / c.count);
+
+      d.nodes.forEach(function (n) {
+        n.x = n.category * dims.width_padded + dims.wpad;
+        n.y = n.index * dims.heights_padded[n.category] + dims.hpads[n.category] + dims.top;
+        n.center_x = n.x + dims.width / 2.0;
+        n.center_y = n.y + dims.height / 2.0;
+        n.left_x = n.x;
+        n.right_x = n.x + dims.width;
+      });
+
+      var svg = d3.select("#canvas")
+        .append("svg")
+        .attr("width", dims.width_total)
+        .attr("height", dims.height_total + dims.top);
+
+      var propagate = function (direction, to_activate, to_lock, d_this, i) {
+        var is_link = (d_this.name === undefined);
+        var element = d3.selectAll(is_link ? ".link" : ".node").filter((_, j) => j == i);
+        if (!element.classed("locked")) {
+          element.classed("active", to_activate);
+          if (to_lock) element.classed("locked", true);
+        }
+
+        if (is_link) {
+          if (direction == 'both' || direction == 'left') {
+            propagate('left', to_activate, to_lock, d.nodes[d_this.left], d_this.left);
+          }
+          if (direction == 'both' || direction == 'right') {
+            propagate('right', to_activate, to_lock, d.nodes[d_this.right], d_this.right);
+          }
+        }
+        else {
+          d.links.forEach(function (l, j) {
+            if (l.right == i && (direction == 'both' || direction == 'left')) {
+              propagate('left', to_activate, to_lock, l, j);
+            }
+            if (l.left == i && (direction == 'both' || direction == 'right')) {
+              propagate('right', to_activate, to_lock, l, j);
+            }
+          });
+        }
+      };
+
+      var mouseover = function (d_this, i) {
+        propagate('both', true, false, d_this, i);
+      };
+
+      var mouseout = function (d_this, i) {
+        propagate('both', false, false, d_this, i);
+      };
+
+      var clearall = function () {
+        d3.selectAll(".node,.link").classed("locked", false).classed("active", false);
+      }
+
+      var click = function (d_this, i) {
+        clearall();
+        propagate('both', true, true, d_this, i);
+      }
+
+      svg.selectAll('.cattext')
+        .data(d.categories)
+        .enter().append("text")
+        .attr("class", "cattext")
+        .attr("x", (c, i) => i * dims.width_padded + dims.half_width_padded)
+        .attr("y", dims.top - dims.hpad * 2.0)
+        .text(c => c.name)
+        .style("text-anchor", "middle");
+
+
+      svg.selectAll('.nodetext')
+        .data(d.nodes)
+        .enter().append("text")
+        .attr("class", "nodetext")
+        .attr("x", n => n.center_x)
+        .attr("y", n => n.center_y)
+        .text(n => n.name)
+        .style("text-anchor", "middle")
+        .style("dominant-baseline", "middle");
+
+      svg.selectAll('.node')
+        .data(d.nodes)
+        .enter().append("rect")
+        .attr("class", "node")
+        .attr("x", n => n.x)
+        .attr("y", n => n.y)
+        .attr("width", dims.width)
+        .attr("height", dims.height)
+        .on("mouseover", mouseover)
+        .on("mouseout", mouseout)
+        .on("click", click);
+
+      svg.selectAll(".link")
+        .data(d.links)
+        .enter().append("path")
+        .attr("class", "link")
+        .attr("d", d3.linkHorizontal()
+          .source(l => [d.nodes[l.left].right_x, d.nodes[l.left].center_y])
+          .target(l => [d.nodes[l.right].left_x, d.nodes[l.right].center_y])
+        )
+        .on("mouseover", mouseover)
+        .on("mouseout", mouseout)
+        .on("click", click);
+
+    });
+
+  </script>
+</body>
+
+</html>
