@@ -3,54 +3,66 @@
 
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dark Matter Graph</title>
   <style>
-    html, text, button, input, select, textarea{
+    html {
       font-family: "Open Sans", sans-serif;
     }
 
-    #canvas svg {
+    svg#canvas {
       margin: 0 auto;
       display: block;
     }
 
     .cattext {
       font-weight: bold;
+      text-anchor: middle;
+    }
+
+    .nodetext {
+      text-anchor: middle;
+      dominant-baseline: middle;
     }
 
     .node {
-      fill: #555;
+      fill: #000;
       fill-opacity: 0.05;
-      stroke: #555;
+      stroke: #000;
       stroke-width: 1px;
+      stroke-opacity: 0.5;
     }
 
     .link {
       fill: none;
-      stroke: #555;
+      stroke: #000;
       stroke-width: 2px;
+      stroke-opacity: 0.35;
     }
 
-    rect.active {
+    .node.active {
       fill: #36C;
       fill-opacity: 0.2;
       stroke: #36C;
       stroke-width: 1px;
+      stroke-opacity: 1.0;
     }
 
-    path.active {
+    .link.active {
       stroke: #36C;
-      stroke-width: 4px;
+      stroke-width: 3px;
+      stroke-opacity: 1.0;
     }
   </style>
 </head>
 
 <body>
-  <div id="canvas"></div>
+  <div>
+    <svg id="canvas"></svg>
+  </div>
+
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script>
-    var dims = { 'width': 300, 'wpad': 50, 'height': 50, 'hpad': 10, 'top': 50 };
+    const dims = { 'width': 300, 'wpad': 50, 'height': 50, 'hpad': 10, 'top': 50 };
 
     dims.width_padded = dims.width + dims.wpad * 2;
     dims.height_padded = dims.height + dims.hpad * 2;
@@ -60,17 +72,17 @@
     d3.json('data/data.json', function (error, d) {
       if (error) throw error;
 
-      dims.n_cols = d.categories.length;
-      dims.n_rows = d.categories
-        .map(c => c.count)
-        .reduce((max, cur) => Math.max(max, cur), 0);
+      d.categories.forEach(c => { c.count = 0; });
+      d.nodes.forEach(n => { d.categories[n.category].count += 1; });
 
+      dims.n_cols = d.categories.length;
+      dims.n_rows = Math.max(...d.categories.map(c => c.count));
       dims.height_total = dims.n_rows * dims.height_padded;
       dims.width_total = dims.n_cols * dims.width_padded;
       dims.hpads = d.categories.map(c => dims.height_total / 2.0 / c.count - dims.half_height);
       dims.heights_padded = d.categories.map(c => dims.height_total / c.count);
 
-      d.nodes.forEach(function (n) {
+      d.nodes.forEach(n => {
         n.x = n.category * dims.width_padded + dims.wpad;
         n.y = n.index * dims.heights_padded[n.category] + dims.hpads[n.category] + dims.top;
         n.center_x = n.x + dims.width / 2.0;
@@ -79,55 +91,41 @@
         n.right_x = n.x + dims.width;
       });
 
-      var svg = d3.select("#canvas")
-        .append("svg")
-        .attr("width", dims.width_total)
-        .attr("height", dims.height_total + dims.top);
+      const propagate = function (d_this, i, to_activate, to_lock = false, to_left = true, to_right = true) {
+        const is_link = (d_this.name === undefined);
+        const element = d3.selectAll(is_link ? ".link" : ".node").filter((_, j) => j == i);
 
-      var propagate = function (direction, to_activate, to_lock, d_this, i) {
-        var is_link = (d_this.name === undefined);
-        var element = d3.selectAll(is_link ? ".link" : ".node").filter((_, j) => j == i);
         if (!element.classed("locked")) {
           element.classed("active", to_activate);
           if (to_lock) element.classed("locked", true);
         }
 
         if (is_link) {
-          if (direction == 'both' || direction == 'left') {
-            propagate('left', to_activate, to_lock, d.nodes[d_this.left], d_this.left);
-          }
-          if (direction == 'both' || direction == 'right') {
-            propagate('right', to_activate, to_lock, d.nodes[d_this.right], d_this.right);
-          }
+          if (to_left) propagate(d.nodes[d_this.left], d_this.left, to_activate, to_lock, true, false);
+          if (to_right) propagate(d.nodes[d_this.right], d_this.right, to_activate, to_lock, false, true);
         }
         else {
-          d.links.forEach(function (l, j) {
-            if (l.right == i && (direction == 'both' || direction == 'left')) {
-              propagate('left', to_activate, to_lock, l, j);
-            }
-            if (l.left == i && (direction == 'both' || direction == 'right')) {
-              propagate('right', to_activate, to_lock, l, j);
-            }
+          d.links.forEach((l, j) => {
+            if (l.right == i && to_left) propagate(l, j, to_activate, to_lock, true, false);
+            if (l.left == i && to_right) propagate(l, j, to_activate, to_lock, false, true);
           });
         }
       };
 
-      var mouseover = function (d_this, i) {
-        propagate('both', true, false, d_this, i);
-      };
+      const mouseover = function (d_this, i) { propagate(d_this, i, true); };
+      const mouseout = function (d_this, i) { propagate(d_this, i, false); };
 
-      var mouseout = function (d_this, i) {
-        propagate('both', false, false, d_this, i);
-      };
-
-      var clearall = function () {
-        d3.selectAll(".node,.link").classed("locked", false).classed("active", false);
-      }
-
-      var click = function (d_this, i) {
+      const clearall = function () { d3.selectAll(".node,.link").classed("locked", false).classed("active", false); }
+      const itemclick = function (d_this, i) {
         clearall();
-        propagate('both', true, true, d_this, i);
+        propagate(d_this, i, true, true);
+        d3.event.stopPropagation();
       }
+
+      const svg = d3.select("svg#canvas")
+        .attr("width", dims.width_total)
+        .attr("height", dims.height_total + dims.top)
+        .on("click", clearall);
 
       svg.selectAll('.cattext')
         .data(d.categories)
@@ -135,9 +133,7 @@
         .attr("class", "cattext")
         .attr("x", (c, i) => i * dims.width_padded + dims.half_width_padded)
         .attr("y", dims.top - dims.hpad * 2.0)
-        .text(c => c.name)
-        .style("text-anchor", "middle");
-
+        .text(c => c.name);
 
       svg.selectAll('.nodetext')
         .data(d.nodes)
@@ -145,9 +141,7 @@
         .attr("class", "nodetext")
         .attr("x", n => n.center_x)
         .attr("y", n => n.center_y)
-        .text(n => n.name)
-        .style("text-anchor", "middle")
-        .style("dominant-baseline", "middle");
+        .text(n => n.name);
 
       svg.selectAll('.node')
         .data(d.nodes)
@@ -159,19 +153,19 @@
         .attr("height", dims.height)
         .on("mouseover", mouseover)
         .on("mouseout", mouseout)
-        .on("click", click);
+        .on("click", itemclick);
 
       svg.selectAll(".link")
         .data(d.links)
         .enter().append("path")
         .attr("class", "link")
         .attr("d", d3.linkHorizontal()
-          .source(l => [d.nodes[l.left].right_x, d.nodes[l.left].center_y])
-          .target(l => [d.nodes[l.right].left_x, d.nodes[l.right].center_y])
+          .source(l => { let n = d.nodes[l.left]; return [n.right_x, n.center_y]; })
+          .target(l => { let n = d.nodes[l.right]; return [n.left_x, n.center_y]; })
         )
         .on("mouseover", mouseover)
         .on("mouseout", mouseout)
-        .on("click", click);
+        .on("click", itemclick);
 
     });
 
