@@ -35,16 +35,16 @@ Models:
     label: Self-Interacting dark matter
     description: >-
         Dark matter possessing a long-range self interaction cross section.
-  - key: ann
-    label: Annihilating dark matter
-  - key: decay
-    label: Decaying dark matter
+  #- key: ann
+  #  label: Annihilating dark matter
+  #- key: decay
+  #  label: Decaying dark matter
   - key: fuzzy
     label: Fuzzy dark matter
-  - key: alp
-    label: Axion (or axion-like) dark matter
   - key: macho
     label: Massive compact dark matter
+  - key: alp
+    label: Axion (or axion-like) dark matter
 
 Probes:
   - key: min_halo_mass
@@ -69,13 +69,13 @@ Measurements:
   - key: flux_ratio
     label: Strong lens flux ratio anomalies
   - key: stream_orbits
-    label: Stellar stream orbital trajectory
+    label: Stellar stream orbits
   - key: cluster_sl
     label: Cluster strong lens model
   - key: cluster_wl
     label: Cluster weak lens modeling
   - key: wl_shear
-    label: Weak lensing position-shear correlation
+    label: Position-shear correlation
   - key: microlens
     label: Stellar microlensing
   - key: nanolens
