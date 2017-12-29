@@ -13,12 +13,12 @@ The web app is made by [@yymao](https://yymao.github.io/).
 
 ## Usage
 
-1. Clone this repo
+1. Clone this repo:
    ```
    git clone https://github.com/lsstdarkmatter/dark-matter-graph.git
    cd dark-matter-graph
    ```
-   or update it if you already have a local clone
+   or update it if you already have a local clone:
    ```
    cd dark-matter-graph
    git pull
@@ -29,7 +29,7 @@ The web app is made by [@yymao](https://yymao.github.io/).
    data/prepare_data.py -o data/data.json
    ```
 
-3. Start a http server
+3. Start a http server:
    ```
    python -m http.server
    ```
@@ -37,6 +37,10 @@ The web app is made by [@yymao](https://yymao.github.io/).
    ```
    python2 -m SimpleHTTPServer
    ```
+
+4. Direct your browser to the URL the above command returns (usually it is http://0.0.0.0:8000/).
+
+   _Note: if you get an `OSError: [Errno 98] Address already in use`, add some 4- or 5-digit numbers after the command, e.g., `python -m http.server 12345`_. 
 
 ## Format of `data.json`
 
