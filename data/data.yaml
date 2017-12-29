@@ -72,8 +72,10 @@ Measurements:
     label: Stellar stream orbital trajectory
   - key: cluster_sl
     label: Cluster strong lens model
-  - key: wl_shear_corr
-    label: Weak lensing position-shear corr.
+  - key: cluster_wl
+    label: Cluster weak lens modeling
+  - key: wl_shear
+    label: Weak lensing position-shear correlation
   - key: microlens
     label: Stellar microlensing
   - key: nanolens
