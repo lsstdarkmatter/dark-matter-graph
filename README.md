@@ -38,6 +38,11 @@ The web app is made by [@yymao](https://yymao.github.io/).
    python2 -m SimpleHTTPServer
    ```
 
+4. Direct your browser to the server
+   ```
+   http://0.0.0.0:8000/
+   ```
+
 ## Format of `data.json`
 
 - `data.json` should be a json object with three attributes `categories`, `nodes`, and `links`. Each of them should be an array of objects.
