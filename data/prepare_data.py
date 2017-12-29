@@ -135,18 +135,18 @@ def prepare_data_from_yaml(yaml_file):
     links = {}
     for i, path_obj in enumerate(d['Paths']):
         path = path_obj['path']
-        for k in path:
-            assert k in nodes_keys, '{} in {} is not a valid key'.format(k, path)
-        for k1, k2 in zip(path[:-1], path[1:]):
-            link_key = (nodes_keys.index(k1), nodes_keys.index(k2))
+        path = [nodes_keys.index(k) for k in path]
+        for link_key in zip(path[:-1], path[1:]):
             if link_key not in links:
                 links[link_key] = {'left': link_key[0], 'right': link_key[1], 'paths':[]}
             links[link_key]['paths'].append(i)
+        path_obj['path'] = path
 
     return {
         'categories': [{'label': c} for c in categories],
         'nodes': list(nodes.values()),
         'links': list(links.values()),
+        'paths': d['Paths'],
     }
 
 
