@@ -2,8 +2,9 @@
 import csv
 import json
 import bisect
-from collections import OrderedDict, Counter
+from collections import OrderedDict
 import argparse
+import yaml
 import requests
 
 
@@ -27,8 +28,8 @@ def prepare_data_from_table():
             if i:
                 this_link = (last_node, this_node)
                 if this_link not in links:
-                    links[this_link] = {'left': last_node, 'right': this_node, 'entries':[]}
-                links[this_link]['entries'].append(set_id)
+                    links[this_link] = {'left': last_node, 'right': this_node, 'paths':[]}
+                links[this_link]['paths'].append(set_id)
             last_node = this_node
 
     return {
@@ -109,14 +110,59 @@ def prepare_data_from_matrix():
     }
 
 
-def main(use_table, output):
-    prepare_data_this = prepare_data_from_table if use_table else prepare_data_from_matrix
+def prepare_data_from_yaml(yaml_file):
+    with open(yaml_file) as f:
+        d = yaml.load(f)
+
+    path_key = 'Paths'
+    paths = d[path_key]
+    del d[path_key]
+
+    categories = []
+    nodes = OrderedDict()
+    for i, (category, nodes_this) in enumerate(d.items()):
+        for j, (key, obj) in enumerate(nodes_this.items()):
+            obj['category'] = i
+            obj['index'] = j
+            obj['name'] = obj.get('title', key)
+            nodes[key] = obj
+
+    nodes_keys = list(nodes.keys())
+
+    links = {}
+    for i, path_obj in enumerate(paths):
+        path = path_obj['path']
+        for k in path:
+            assert k in nodes_keys, '{} in {} is not a valid key'.format(k, path)
+        for k1, k2 in zip(path[:-1], path[1:]):
+            link_key = (nodes_keys.index(k1), nodes_keys.index(k2))
+            if link_key not in links:
+                links[link_key] = {'left': link_key[0], 'right': link_key[1], 'paths':[]}
+            links[link_key]['paths'].append(i)
+
+    return {
+        'categories': [{'name': c} for c in categories],
+        'nodes': list(nodes.values()),
+        'links': list(links.values()),
+    }
+
+
+def main(output, yaml_file, use_table, use_matrix):
+    if use_table:
+        data = prepare_data_from_table()
+    elif use_matrix:
+        data = prepare_data_from_matrix()
+    else:
+        data = prepare_data_from_yaml(yaml_file)
     with open(output, 'w') as f:
-        json.dump(prepare_data_this(), f)
+        json.dump(data, f)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', metavar='OUTPUT', dest='output', default='data.json')
-    parser.add_argument('-t', dest='use_table', action='store_true')
+    parser.add_argument('--yaml-file', default='data.yaml')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-t', dest='use_table', action='store_true')
+    group.add_argument('-m', dest='use_matrix', action='store_true')
     main(**vars(parser.parse_args()))
