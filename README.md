@@ -40,7 +40,7 @@ The web app is made by [@yymao](https://yymao.github.io/).
 
 4. Direct your browser to the URL the above command returns (usually it is http://0.0.0.0:8000/).
 
-   _Note: if you get an `OSError: [Errno 98] Address already in use`, add some 4- or 5-digit numbers after the command, e.g., `python -m http.server 12345`_. 
+   _Note: if you get an `OSError: [Errno 98] Address already in use`, add some 4- or 5-digit numbers after the command, e.g., `python -m http.server 12345`_.
 
 ## Format of `data.json`
 
@@ -52,20 +52,20 @@ The web app is made by [@yymao](https://yymao.github.io/).
 Here's a minimal example:
 ```json
 {
-  "categories": 
+  "categories":
   [
-    {"name": "Model"}, 
+    {"name": "Model"},
     {"name": "Probe"}
-  ], 
-  
-  "nodes": 
+  ],
+
+  "nodes":
   [
-    {"category": 0, "index": 0, "name": "SIDM"}, 
+    {"category": 0, "index": 0, "name": "SIDM"},
     {"category": 1, "index": 0, "name": "Halo Density Profile"}
-  ], 
-  
+  ],
+
   "links": [
-    {"left": 0, "right": 1}, 
+    {"left": 0, "right": 1},
   ]
 }
 ```

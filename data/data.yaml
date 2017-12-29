@@ -1,0 +1,67 @@
+# Data entry file.
+#
+# Model - A "model" is a theoretical framework describing the physical
+#   mechanism governing the microphysics of dark matter.  Examples:
+#   warm dark matter, axion dark matter, primordial black hole dark
+#   matter, etc.
+#
+# Probe - A "probe" is a physical prediction of how a model would
+#   produce an observable change in the universe that is
+#   distinguishable from the ""standard"" cold, collisionless
+#   LCDM. Examples: minimum subhalo mass, anomalous energy loss
+#   mechanism, halo triaxiliaty
+#
+# Measurement - A "measurement" is a physical observable that can be
+#   measured to test a probe.  Examples: satellite galaxy luminosity
+#   function, galaxy-galaxy strong lensing flux anamolies, etc.
+#
+# Target - A "target" is an astrophysical source or source class which
+#   is used to make a measurement.  Examples: populations of stars,
+#   individual galaxy clusters
+
+Models:
+  wdm:
+    title: Warm Dark Matter
+    description: Dark matter that acts like a thermal particle with mass less than 1 GeV
+  sidm: 
+    title: Self-Interacting Dark Matter
+    description: Dark matter possessing a long-range self interaction cross section.
+
+Probes:
+  subhalo_abundance:
+    title: Subhalo abundance
+    description: null
+  min_halo_mass:
+    title: Minimum subhalo mass
+    description: null
+  
+Measurements:
+  sat_lum_fn:
+    title: Satellite luminosity function
+    description: Satellite galaxy luminosity function.
+
+Targets:
+  istars:
+    title: Individual stars
+    description: null
+  pstars:
+    title: Population of stars
+    description: null
+  igalaxies:
+    title: Individual galaxies
+    description: null
+  pgalaxies:
+    title: Population of galaxies
+    description: null
+  iclusters:
+    title: Individual clusters
+    description: null
+  pclusters:
+    title: Population of clusters
+    description: null
+
+Paths:
+  - path: [wdm, subhalo_abundance, sat_lum_fn, pstars]
+  - path: [wdm, subhalo_abundance, sat_lum_fn, pgalaxies]
+  - path: [wdm, min_halo_mass, sat_lum_fn, pstars]
+  - path: [wdm, min_halo_mass, sat_lum_fn, pgalaxies]
