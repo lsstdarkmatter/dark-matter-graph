@@ -19,49 +19,122 @@
 #   is used to make a measurement.  Examples: populations of stars,
 #   individual galaxy clusters
 
+Categories:
+  - Models
+  - Probes
+  - Measurements
+  - Targets
+
 Models:
-  wdm:
-    title: Warm Dark Matter
-    description: Dark matter that acts like a thermal particle with mass less than 1 GeV
-  sidm: 
-    title: Self-Interacting Dark Matter
-    description: Dark matter possessing a long-range self interaction cross section.
+  - key: wdm
+    label: Warm dark matter
+    description: >-
+      Dark matter that acts like a thermal particle
+      with mass less than 1 GeV.
+  - key: sidm
+    label: Self-Interacting dark matter
+    description: >-
+        Dark matter possessing a long-range self interaction cross section.
+  #- key: ann
+  #  label: Annihilating dark matter
+  #- key: decay
+  #  label: Decaying dark matter
+  - key: fuzzy
+    label: Fuzzy dark matter
+  - key: macho
+    label: Massive compact dark matter
+  - key: alp
+    label: Axion (or axion-like) dark matter
 
 Probes:
-  subhalo_abundance:
-    title: Subhalo abundance
-    description: null
-  min_halo_mass:
-    title: Minimum subhalo mass
-    description: null
-  
+  - key: min_halo_mass
+    label: Minimum subhalo mass
+  - key: halo_density
+    label: Halo density profile
+  - key: halo_triaxiality
+    label: Halo triaxiality
+  - key: subhalo_abundance
+    label: Subhalo abundance
+  - key: quantization
+    label: Dark matter quantization
+  - key: energy_loss
+    label: Anomalous energy loss
+
 Measurements:
-  sat_lum_fn:
-    title: Satellite luminosity function
+  - key: sat_lum_fn
+    label: Satellite luminosity function
     description: Satellite galaxy luminosity function.
+  - key: stream_gaps
+    label: Gaps in stellar streams
+  - key: flux_ratio
+    label: Strong lens flux ratio anomalies
+  - key: stream_orbits
+    label: Stellar stream orbits
+  - key: cluster_sl
+    label: Cluster strong lens model
+  - key: cluster_wl
+    label: Cluster weak lens modeling
+  - key: wl_shear
+    label: Position-shear correlation
+  - key: microlens
+    label: Stellar microlensing
+  - key: nanolens
+    label: Stellar nano-lensing
+  - key: wdlf
+    label: White dwarf luminosity function
+  - key: wide_binary
+    label: Population of wide-binary star
 
 Targets:
-  istars:
-    title: Individual stars
-    description: null
-  pstars:
-    title: Population of stars
-    description: null
-  igalaxies:
-    title: Individual galaxies
-    description: null
-  pgalaxies:
-    title: Population of galaxies
-    description: null
-  iclusters:
-    title: Individual clusters
-    description: null
-  pclusters:
-    title: Population of clusters
-    description: null
+  - key: istars
+    label: Individual stars
+  - key: pstars
+    label: Population of stars
+  - key: igalaxies
+    label: Individual galaxies
+  - key: pgalaxies
+    label: Population of galaxies
+  - key: iclusters
+    label: Individual clusters
+  - key: pclusters
+    label: Population of clusters
 
 Paths:
+  # WDM: Subhalo abundance
   - path: [wdm, subhalo_abundance, sat_lum_fn, pstars]
   - path: [wdm, subhalo_abundance, sat_lum_fn, pgalaxies]
+  - path: [wdm, subhalo_abundance, stream_gaps, pstars]
+  - path: [wdm, subhalo_abundance, flux_ratio, iclusters]
+  - path: [wdm, subhalo_abundance, flux_ratio, igalaxies]
+  - path: [wdm, subhalo_abundance, nanolens, istars]
+  - path: [wdm, subhalo_abundance, nanolens, pstars]
+  # WDM: Minimum halo mass
   - path: [wdm, min_halo_mass, sat_lum_fn, pstars]
   - path: [wdm, min_halo_mass, sat_lum_fn, pgalaxies]
+  - path: [wdm, min_halo_mass, stream_gaps, pstars]
+  - path: [wdm, min_halo_mass, flux_ratio, iclusters]
+  - path: [wdm, min_halo_mass, flux_ratio, igalaxies]
+  - path: [wdm, min_halo_mass, nanolens, istars]
+  - path: [wdm, min_halo_mass, nanolens, pstars]
+  # SIDM: Halo density
+  - path: [sidm, halo_density, stream_orbits, pstars]
+  - path: [sidm, halo_density, cluster_sl, iclusters]
+  - path: [sidm, halo_density, cluster_sl, pclusters]
+  # SIDM: Halo triaxiality
+  - path: [sidm, halo_triaxiality, stream_orbits, pstars]
+  - path: [sidm, halo_triaxiality, cluster_wl, iclusters]
+  - path: [sidm, halo_triaxiality, cluster_wl, pclusters]
+  - path: [sidm, halo_triaxiality, wl_shear, pgalaxies]
+  # Fuzzy: Quantization
+  - path: [fuzzy, quantization, microlens, pstars]
+  - path: [fuzzy, quantization, microlens, istars]
+  # Fuzzy: Min Halo
+  - path: [fuzzy, min_halo_mass, stream_gaps, pstars]
+  - path: [fuzzy, min_halo_mass, flux_ratio, iclusters]
+  - path: [fuzzy, min_halo_mass, flux_ratio, igalaxies]
+  # ALPs:
+  - path: [alp, energy_loss, wdlf, pstars]
+  # MACHOs:
+  - path: [macho, quantization, microlens, pstars]
+  - path: [macho, quantization, microlens, istars]
+  - path: [macho, halo_density, ]

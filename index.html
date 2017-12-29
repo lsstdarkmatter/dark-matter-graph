@@ -93,7 +93,7 @@
       });
 
       const propagate = function (d_this, i, to_activate, to_lock = false, to_left = true, to_right = true) {
-        const is_link = (d_this.name === undefined);
+        const is_link = !(d_this.left === undefined);
         const element = d3.selectAll(is_link ? ".link" : ".node").filter((_, j) => j == i);
 
         if (!element.classed("locked")) {
@@ -134,7 +134,7 @@
         .attr("class", "cattext")
         .attr("x", (c, i) => i * dims.width_padded + dims.half_width_padded)
         .attr("y", dims.top - dims.hpad * 2.0)
-        .text(c => c.name);
+        .text(c => c.label);
 
       svg.selectAll('.nodetext')
         .data(d.nodes)
@@ -142,7 +142,7 @@
         .attr("class", "nodetext")
         .attr("x", n => n.center_x)
         .attr("y", n => n.center_y)
-        .text(n => n.name);
+        .text(n => n.label);
 
       svg.selectAll('.node')
         .data(d.nodes)
