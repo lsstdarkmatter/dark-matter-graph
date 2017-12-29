@@ -13,7 +13,7 @@
 #
 # Measurement - A "measurement" is a physical observable that can be
 #   measured to test a probe.  Examples: satellite galaxy luminosity
-#   function, galaxy-galaxy strong lensing flux anamolies, etc.
+#   function, galaxy-galaxy strong lensing flux anomalies, etc.
 #
 # Target - A "target" is an astrophysical source or source class which
 #   is used to make a measurement.  Examples: populations of stars,
@@ -34,7 +34,7 @@ Models:
   - key: sidm
     label: Self-Interacting dark matter
     description: >-
-        Dark matter possessing a long-range self interaction cross section.
+        Dark matter possessing a long-range self-interaction cross section.
   #- key: ann
   #  label: Annihilating dark matter
   #- key: decay
@@ -79,11 +79,11 @@ Measurements:
   - key: microlens
     label: Stellar microlensing
   - key: nanolens
-    label: Stellar nano-lensing
+    label: Stellar nanolensing
   - key: wdlf
     label: White dwarf luminosity function
   - key: wide_binary
-    label: Population of wide-binary star
+    label: Population of wide-binary stars
 
 Targets:
   - key: istars
@@ -137,4 +137,5 @@ Paths:
   # MACHOs:
   - path: [macho, quantization, microlens, pstars]
   - path: [macho, quantization, microlens, istars]
-  - path: [macho, halo_density, ]
+  - path: [macho, quantization, wide_binary, pstars]
+  - path: [macho, quantization, wide_binary, istars]
