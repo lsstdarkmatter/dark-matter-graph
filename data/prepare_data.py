@@ -39,7 +39,7 @@ def prepare_data_from_table():
 
 
 def prepare_data_from_matrix():
-    raw_data = parse_google_sheet('1OhcJ0p6Wa2_Xl4mO2_JwEG06wBXbdGlD0hCfVQomOyY', '1680621779')
+    raw_data = parse_google_sheet('1OhcJ0p6Wa2_Xl4mO2_JwEG06wBXbdGlD0hCfVQomOyY', '681738291')
 
     nodes = []
     nodes_map_y = {}
