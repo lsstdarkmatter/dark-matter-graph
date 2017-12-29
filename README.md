@@ -24,9 +24,9 @@ The web app is made by [@yymao](https://yymao.github.io/).
    git pull
    ```
 
-2. Pull data from the spreadsheet:
+2. Prepare data from the spreadsheet:
    ```
-   data/prepare_data.py -o data/data.json
+   data/prepare_data.py --yaml-file data/data.yaml -o data/data.json
    ```
 
 3. Start a http server:
