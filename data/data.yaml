@@ -72,8 +72,10 @@ Measurements:
     label: Stellar stream orbital trajectory
   - key: cluster_sl
     label: Cluster strong lens model
-  - key: wl_shear_corr
-    label: Weak lensing position-shear corr.
+  - key: cluster_wl
+    label: Cluster weak lens modeling
+  - key: wl_shear
+    label: Weak lensing position-shear correlation
   - key: microlens
     label: Stellar microlensing
   - key: nanolens
@@ -102,11 +104,37 @@ Paths:
   - path: [wdm, subhalo_abundance, sat_lum_fn, pstars]
   - path: [wdm, subhalo_abundance, sat_lum_fn, pgalaxies]
   - path: [wdm, subhalo_abundance, stream_gaps, pstars]
-  - path: [wdm, subhalo_abundance, stream_orbits, pstars]
   - path: [wdm, subhalo_abundance, flux_ratio, iclusters]
+  - path: [wdm, subhalo_abundance, flux_ratio, igalaxies]
   - path: [wdm, subhalo_abundance, nanolens, istars]
   - path: [wdm, subhalo_abundance, nanolens, pstars]
   # WDM: Minimum halo mass
   - path: [wdm, min_halo_mass, sat_lum_fn, pstars]
   - path: [wdm, min_halo_mass, sat_lum_fn, pgalaxies]
   - path: [wdm, min_halo_mass, stream_gaps, pstars]
+  - path: [wdm, min_halo_mass, flux_ratio, iclusters]
+  - path: [wdm, min_halo_mass, flux_ratio, igalaxies]
+  - path: [wdm, min_halo_mass, nanolens, istars]
+  - path: [wdm, min_halo_mass, nanolens, pstars]
+  # SIDM: Halo density
+  - path: [sidm, halo_density, stream_orbits, pstars]
+  - path: [sidm, halo_density, cluster_sl, iclusters]
+  - path: [sidm, halo_density, cluster_sl, pclusters]
+  # SIDM: Halo triaxiality
+  - path: [sidm, halo_triaxiality, stream_orbits, pstars]
+  - path: [sidm, halo_triaxiality, cluster_wl, iclusters]
+  - path: [sidm, halo_triaxiality, cluster_wl, pclusters]
+  - path: [sidm, halo_triaxiality, wl_shear, pgalaxies]
+  # Fuzzy: Quantization
+  - path: [fuzzy, quantization, microlens, pstars]
+  - path: [fuzzy, quantization, microlens, istars]
+  # Fuzzy: Min Halo
+  - path: [fuzzy, min_halo_mass, stream_gaps, pstars]
+  - path: [fuzzy, min_halo_mass, flux_ratio, iclusters]
+  - path: [fuzzy, min_halo_mass, flux_ratio, igalaxies]
+  # ALPs:
+  - path: [alp, energy_loss, wdlf, pstars]
+  # MACHOs:
+  - path: [macho, quantization, microlens, pstars]
+  - path: [macho, quantization, microlens, istars]
+  - path: [macho, halo_density, ]
