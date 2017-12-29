@@ -23,7 +23,7 @@ def prepare_data_from_table():
         for i, node in enumerate(row):
             if node.lower() not in nodes:
                 max_rank = max((v['index'] for v in nodes.values() if v['category'] == i), default=-1)
-                nodes[node.lower()] = {'name': node, 'category': i, 'index': max_rank+1}
+                nodes[node.lower()] = {'label': node, 'category': i, 'index': max_rank+1}
             this_node = list(nodes.keys()).index(node.lower())
             if i:
                 this_link = (last_node, this_node)
@@ -33,7 +33,7 @@ def prepare_data_from_table():
             last_node = this_node
 
     return {
-        'categories': [{'name': c} for c in raw_data[0]],
+        'categories': [{'label': c} for c in raw_data[0]],
         'nodes': list(nodes.values()),
         'links': list(links.values()),
     }
@@ -104,8 +104,8 @@ def prepare_data_from_matrix():
     categories = [raw_data[2][0]] + [raw_data[0][i] for i in cat_indices_x]
 
     return {
-        'categories': [{'name': c} for c in categories],
-        'nodes': [dict(zip(('category', 'index', 'name'), n)) for n in nodes],
+        'categories': [{'label': c} for c in categories],
+        'nodes': [dict(zip(('category', 'index', 'label'), n)) for n in nodes],
         'links': [dict(zip(('left', 'right'), l)) for l in links],
     }
 
@@ -114,23 +114,26 @@ def prepare_data_from_yaml(yaml_file):
     with open(yaml_file) as f:
         d = yaml.load(f)
 
-    path_key = 'Paths'
-    paths = d[path_key]
-    del d[path_key]
+    categories = d['Categories']
 
-    categories = []
     nodes = OrderedDict()
-    for i, (category, nodes_this) in enumerate(d.items()):
-        for j, (key, obj) in enumerate(nodes_this.items()):
-            obj['category'] = i
-            obj['index'] = j
-            obj['name'] = obj.get('title', key)
-            nodes[key] = obj
+    for i, category_key in enumerate(categories):
+        category_obj = d[category_key]
+        for j, node_obj in enumerate(category_obj):
+            node_key = node_obj['key']
+            del node_obj['key']
+            if node_key in nodes:
+                raise ValueError('{} repeatedly defined!'.format(node_key))
+            if 'title' not in node_obj:
+                node_obj['title'] = node_key
+            node_obj['category'] = i
+            node_obj['index'] = j
+            nodes[node_key] = node_obj
 
     nodes_keys = list(nodes.keys())
 
     links = {}
-    for i, path_obj in enumerate(paths):
+    for i, path_obj in enumerate(d['Paths']):
         path = path_obj['path']
         for k in path:
             assert k in nodes_keys, '{} in {} is not a valid key'.format(k, path)
@@ -141,7 +144,7 @@ def prepare_data_from_yaml(yaml_file):
             links[link_key]['paths'].append(i)
 
     return {
-        'categories': [{'name': c} for c in categories],
+        'categories': [{'label': c} for c in categories],
         'nodes': list(nodes.values()),
         'links': list(links.values()),
     }
