@@ -19,6 +19,12 @@
 #   is used to make a measurement.  Examples: populations of stars,
 #   individual galaxy clusters
 
+Categories:
+  - Models
+  - Probes
+  - Measurements
+  - Targets
+
 Models:
   - wdm:
       title: Warm dark matter
