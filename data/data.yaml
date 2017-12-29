@@ -19,49 +19,100 @@
 #   is used to make a measurement.  Examples: populations of stars,
 #   individual galaxy clusters
 
+Categories:
+  - Models
+  - Probes
+  - Measurements
+  - Targets
+
 Models:
-  wdm:
-    title: Warm Dark Matter
-    description: Dark matter that acts like a thermal particle with mass less than 1 GeV
-  sidm: 
-    title: Self-Interacting Dark Matter
-    description: Dark matter possessing a long-range self interaction cross section.
+  - wdm:
+      title: Warm dark matter
+      description: >-
+        Dark matter that acts like a thermal particle 
+        with mass less than 1 GeV.
+  - sidm: 
+      title: Self-Interacting dark matter
+      description: >-        
+        Dark matter possessing a long-range self interaction cross section.
+  - ann:
+      title: Annihilating dark matter
+  - decay:
+      title: Decaying dark matter
+  - fuzzy:
+      title: Fuzzy dark matter
+  - alp:
+      title: Axion (or axion-like) dark matter
+  - macho:
+      title: Massive compact dark matter
 
 Probes:
-  subhalo_abundance:
-    title: Subhalo abundance
-    description: null
-  min_halo_mass:
-    title: Minimum subhalo mass
-    description: null
+  - min_halo_mass:
+      title: Minimum subhalo mass
+  - halo_density:
+      title: Halo density profile
+  - halo_triaxiality:
+      title: Halo triaxiality
+  - subhalo_abundance:
+      title: Subhalo abundance
+  - quantization:
+      title: Dark matter quantization
+  - energy_loss:
+      title: Anomolous energy loss
   
 Measurements:
-  sat_lum_fn:
-    title: Satellite luminosity function
-    description: Satellite galaxy luminosity function.
+  - sat_lum_fn:
+      title: Satellite luminosity function
+      description: Satellite galaxy luminosity function.
+  - stream_gaps:
+      title: Gaps in stellar streams
+  - flux_ratio:
+      title: Strong lens flux ratio anomalies
+  - stream_orbits:
+      title: Stellar stream orbital trajectory
+  - cluster_sl:
+      title: Cluster strong lens model
+  - wl_shear_corr:
+      title: Weak lensing position-shear corr.
+  - microlens:
+      title: Stellar microlensing
+  - nanolens:
+      title: Stellar nano-lensing
+  - wdlf:
+      title: White dwarf luminosity function
+  - wide_binary:
+      title: Population of wide-binary star 
 
 Targets:
-  istars:
-    title: Individual stars
-    description: null
-  pstars:
-    title: Population of stars
-    description: null
-  igalaxies:
-    title: Individual galaxies
-    description: null
-  pgalaxies:
-    title: Population of galaxies
-    description: null
-  iclusters:
-    title: Individual clusters
-    description: null
-  pclusters:
-    title: Population of clusters
-    description: null
+  - istars:
+      title: Individual stars
+      description: null
+  - pstars:
+      title: Population of stars
+      description: null
+  - igalaxies:
+      title: Individual galaxies
+      description: null
+  - pgalaxies:
+      title: Population of galaxies
+      description: null
+  - iclusters:
+      title: Individual clusters
+      description: null
+  - pclusters:
+      title: Population of clusters
+      description: null
 
 Paths:
+  # WDM: Subhalo abundance
   - path: [wdm, subhalo_abundance, sat_lum_fn, pstars]
   - path: [wdm, subhalo_abundance, sat_lum_fn, pgalaxies]
+  - path: [wdm, subhalo_abundance, stream_gaps, pstars]
+  - path: [wdm, subhalo_abundance, stream_orbits, pstars]
+  - path: [wdm, subhalo_abundance, flux_ratio, iclusters]
+  - path: [wdm, subhalo_abundance, nanolens, istars]
+  - path: [wdm, subhalo_abundance, nanolens, pstars]
+  # WDM: Minimum halo mass
   - path: [wdm, min_halo_mass, sat_lum_fn, pstars]
   - path: [wdm, min_halo_mass, sat_lum_fn, pgalaxies]
+  - path: [wdm, min_halo_mass, stream_gaps, pstars]
