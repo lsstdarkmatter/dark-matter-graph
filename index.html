@@ -53,6 +53,16 @@
       stroke-width: 3px;
       stroke-opacity: 1.0;
     }
+
+    .footer {
+      font-size: 80%;
+      text-align: center;
+      margin: 20px auto;
+    }
+
+    .footer span {
+      margin: 0 5px;
+    }
   </style>
 </head>
 
@@ -60,7 +70,14 @@
   <div>
     <svg id="canvas"></svg>
   </div>
-
+  <div class="footer">
+    <span>
+      <a href="matrix.html">Click here to see the adjacency matrix</a>.
+    </span>
+    <span>
+      <a href="https://github.com/lsstdarkmatter/dark-matter-graph">Visit the GitHub repo</a> to view source code, request features, and report bugs.
+    </span>
+  </div>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script>
     const dims = { 'width': 300, 'wpad': 50, 'height': 50, 'hpad': 10, 'top': 50 };

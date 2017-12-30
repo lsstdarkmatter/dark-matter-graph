@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Dark Matter Graph: Matrix View</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" type="text/css">
+  <style>
+    html {
+      font-family: "Open Sans", sans-serif;
+    }
+
+    svg#canvas {
+      margin: 20px auto;
+      display: block;
+      shape-rendering: crispEdges;
+    }
+
+    .row_label,
+    .col_label {
+      text-anchor: end;
+      font-size: 12px;
+      dominant-baseline: middle;
+    }
+
+    .col_label {
+      text-anchor: start;
+    }
+
+    .background {
+      fill: #eee;
+    }
+
+    .background_diag {
+      fill: #ddd;
+    }
+
+    line {
+      stroke: #fff;
+    }
+
+    text.active {
+      fill: #36C;
+      font-weight: bold;
+    }
+
+    .footer {
+      font-size: 80%;
+      text-align: center;
+      margin: 20px auto;
+    }
+
+    .footer span {
+      margin: 0 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <svg id="canvas"></svg>
+  </div>
+  <div class="footer">
+    <span>
+      <a href="index.html">Click here to see the network diagram</a>.
+    </span>
+    <span>
+      <a href="https://github.com/lsstdarkmatter/dark-matter-graph">Visit the GitHub repo</a> to view source code, request features, and report bugs.
+    </span>
+  </div>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script>
+    d3.json('data/data.json', function (error, d) {
+      if (error) throw error;
+
+      d.categories.forEach(c => { c.count = 0; });
+      d.nodes.forEach(n => { d.categories[n.category].count += 1; });
+
+      const dims = { 'side': 650, 'label': 200, 'label_pad': 5, 'lw': 2 };
+      dims.width = dims.side + dims.label + dims.label_pad;
+      dims.height = dims.side + dims.label + dims.label_pad;
+      dims.label_total = dims.label + dims.label_pad;
+
+      dims.cell_side = (dims.side - dims.lw * (d.nodes.length - 1)) / d.nodes.length;
+      dims.cell_step = dims.cell_side + dims.lw;
+      dims.cell_half_side = dims.cell_side / 2.0;
+
+      const mouseover1 = p => {
+        d3.selectAll(".row_label").classed("active", (d, i) => i == p.right);
+        d3.selectAll(".col_label").classed("active", (d, i) => i == p.left);
+      };
+
+      const mouseover2 = p => {
+        d3.selectAll(".row_label").classed("active", (d, i) => i == p.left);
+        d3.selectAll(".col_label").classed("active", (d, i) => i == p.right);
+      };
+
+      const mouseout = p => {
+        d3.selectAll("text").classed("active", false);
+      };
+
+      const svg = d3.select("svg#canvas")
+        .attr("width", dims.width)
+        .attr("height", dims.height);
+
+      const matrix = svg.append("g")
+        .attr("transform", "translate(" + dims.label_total + "," + dims.label_total + ")");
+
+      matrix.append("rect")
+        .attr("class", "background")
+        .attr("width", dims.side)
+        .attr("height", dims.side);
+
+      matrix.selectAll(".background_diag")
+        .data(d.categories)
+        .enter().append("rect")
+        .attr("class", "background_diag")
+        .attr("width", c => dims.cell_step * c.count)
+        .attr("height", c => dims.cell_step * c.count)
+        .attr("x", (c, i) => dims.cell_step * d.categories.filter((v, j) => j < i).map(v => v.count).reduce((sum, v) => sum + v, 0))
+        .attr("y", (c, i) => dims.cell_step * d.categories.filter((v, j) => j < i).map(v => v.count).reduce((sum, v) => sum + v, 0));
+
+      matrix.selectAll('.cell1')
+        .data(d.links)
+        .enter().append("rect")
+        .attr("class", "cell1")
+        .attr("width", dims.cell_side)
+        .attr("height", dims.cell_side)
+        .attr("x", l => l.left * dims.cell_step)
+        .attr("y", l => l.right * dims.cell_step)
+        .attr("fill", l => d3.schemeCategory20[d.nodes[l.left].category * 2 + 1])
+        .on("mouseover", mouseover1)
+        .on("mouseout", mouseout);
+
+      matrix.selectAll('.cell2')
+        .data(d.links)
+        .enter().append("rect")
+        .attr("class", "cell2")
+        .attr("width", dims.cell_side)
+        .attr("height", dims.cell_side)
+        .attr("y", l => l.left * dims.cell_step)
+        .attr("x", l => l.right * dims.cell_step)
+        .attr("fill", l => d3.schemeCategory20[d.nodes[l.left].category * 2])
+        .on("mouseover", mouseover2)
+        .on("mouseout", mouseout);
+
+      let line_indices = d3.range(1, d.nodes.length);
+      matrix.selectAll(".hline")
+        .data(line_indices)
+        .enter().append("line")
+        .attr("class", "hline")
+        .attr("x2", dims.side)
+        .attr("y1", l => l * dims.cell_step)
+        .attr("y2", l => l * dims.cell_step)
+        .attr("stroke-width", dims.lw);
+
+      matrix.selectAll(".vline")
+        .data(line_indices)
+        .enter().append("line")
+        .attr("class", "vline")
+        .attr("y2", dims.side)
+        .attr("x1", l => l * dims.cell_step)
+        .attr("x2", l => l * dims.cell_step)
+        .attr("stroke-width", dims.lw);
+
+      let shift = dims.cell_half_side + dims.label_total;
+      svg.append("g")
+        .attr("transform", "translate(" + dims.label + "," + shift + ")")
+        .selectAll('.row_label')
+        .data(d.nodes)
+        .enter().append("text")
+        .attr("class", "row_label")
+        .attr("y", (n, i) => (i * dims.cell_step))
+        .text(n => n.label);
+
+      svg.append("g")
+        .attr("transform", "translate(" + shift + "," + dims.label + ")").selectAll('.col_label')
+        .data(d.nodes)
+        .enter().append("text")
+        .attr("class", "col_label")
+        .text(n => n.label)
+        .attr("transform", (n, i) => "translate(" + (i * dims.cell_step) + ")rotate(-90)");
+    });
+
+  </script>
+</body>
+
+</html>
