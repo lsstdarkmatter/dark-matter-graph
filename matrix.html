@@ -31,6 +31,10 @@
       fill: #eee;
     }
 
+    .background_diag{
+      fill: #ddd;
+    }
+
     line {
       stroke: #fff;
     }
@@ -51,6 +55,9 @@
   <script>
     d3.json('data/data.json', function (error, d) {
       if (error) throw error;
+
+      d.categories.forEach(c => { c.count = 0; });
+      d.nodes.forEach(n => { d.categories[n.category].count += 1; });
 
       const dims = { 'side': 650, 'label': 200, 'label_pad': 5, 'lw': 2 };
       dims.width = dims.side + dims.label + dims.label_pad;
@@ -86,6 +93,15 @@
         .attr("class", "background")
         .attr("width", dims.side)
         .attr("height", dims.side);
+
+      matrix.selectAll(".background_diag")
+        .data(d.categories)
+        .enter().append("rect")
+        .attr("class", "background_diag")
+        .attr("width", c => dims.cell_step * c.count)
+        .attr("height", c => dims.cell_step * c.count)
+        .attr("x", (c, i) => dims.cell_step * d.categories.filter((v, j) => j < i).map(v => v.count).reduce((sum, v) => sum + v, 0))
+        .attr("y", (c, i) => dims.cell_step * d.categories.filter((v, j) => j < i).map(v => v.count).reduce((sum, v) => sum + v, 0));
 
       matrix.selectAll('.cell1')
         .data(d.links)
