@@ -36,7 +36,7 @@ Categories:
       used to make a measurement.  Examples: populations of stars,
       individual galaxy clusters
 
-Models:
+models:
   - key: wdm
     label: Warm dark matter
     description: >-
@@ -56,9 +56,9 @@ Models:
   - key: macho
     label: Massive compact dark matter
   - key: alp
-    label: Axion (or axion-like) dark matter
+    label: Axion-like dark matter
 
-Probes:
+probes:
   - key: min_halo_mass
     label: Minimum subhalo mass
   - key: halo_density
@@ -72,7 +72,7 @@ Probes:
   - key: energy_loss
     label: Anomalous energy loss
 
-Measurements:
+measurements:
   - key: sat_lum_fn
     label: Satellite luminosity function
     description: Satellite galaxy luminosity function.
@@ -97,7 +97,7 @@ Measurements:
   - key: wide_binary
     label: Population of wide-binary stars
 
-Targets:
+targets:
   - key: istars
     label: Individual stars
   - key: pstars
