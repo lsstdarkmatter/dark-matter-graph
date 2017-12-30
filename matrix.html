@@ -31,7 +31,7 @@
       fill: #eee;
     }
 
-    .background_diag{
+    .background_diag {
       fill: #ddd;
     }
 
@@ -43,6 +43,16 @@
       fill: #36C;
       font-weight: bold;
     }
+
+    .footer {
+      font-size: 80%;
+      text-align: center;
+      margin: 20px auto;
+    }
+
+    .footer span {
+      margin: 0 5px;
+    }
   </style>
 </head>
 
@@ -50,7 +60,14 @@
   <div>
     <svg id="canvas"></svg>
   </div>
-
+  <div class="footer">
+    <span>
+      <a href="index.html">Click here to see the network diagram</a>.
+    </span>
+    <span>
+      <a href="https://github.com/lsstdarkmatter/dark-matter-graph">Visit the GitHub repo</a> to view source code, request features, and report bugs.
+    </span>
+  </div>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script>
     d3.json('data/data.json', function (error, d) {
