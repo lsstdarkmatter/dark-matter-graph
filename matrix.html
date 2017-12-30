@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Dark Matter Graph: Matrix View</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" type="text/css">
+  <style>
+    html {
+      font-family: "Open Sans", sans-serif;
+    }
+
+    svg#canvas {
+      margin: 20px auto;
+      display: block;
+    }
+
+    .row_label,
+    .col_label {
+      text-anchor: end;
+      font-size: 12px;
+      dominant-baseline: middle;
+    }
+
+    .col_label {
+      text-anchor: start;
+    }
+
+    .background {
+      fill: #eee;
+    }
+
+    line {
+      stroke: #fff;
+    }
+
+    .cell1, .cell2{
+      fill: darkorange;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <svg id="canvas"></svg>
+  </div>
+
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script>
+    d3.json('data/data.json', function (error, d) {
+      if (error) throw error;
+
+      dims = { 'side': 600, 'label': 200, 'label_pad': 5, 'lw': 2.0 };
+      dims.width = dims.side + dims.label + dims.label_pad;
+      dims.height = dims.side + dims.label + dims.label_pad;
+      dims.label_total = dims.label + dims.label_pad;
+
+      band = d3.scaleBand()
+        .domain(d3.range(d.nodes.length))
+        .range([0, dims.side])
+        .paddingInner(dims.lw / dims.side);
+
+      const svg = d3.select("svg#canvas")
+        .attr("width", dims.width)
+        .attr("height", dims.height);
+
+      const matrix = svg.append("g")
+        .attr("transform", "translate(" + dims.label_total + "," + dims.label_total + ")");
+
+      matrix.append("rect")
+        .attr("class", "background")
+        .attr("width", dims.side)
+        .attr("height", dims.side);
+
+      matrix.selectAll('.cell1')
+        .data(d.links)
+        .enter().append("rect")
+        .attr("class", "cell1")
+        .attr("width", band.bandwidth())
+        .attr("height", band.bandwidth())
+        .attr("x", l => band(l.left))
+        .attr("y", l => band(l.right))
+
+      matrix.selectAll('.cell2')
+        .data(d.links)
+        .enter().append("rect")
+        .attr("class", "cell2")
+        .attr("width", band.bandwidth())
+        .attr("height", band.bandwidth())
+        .attr("x", l => band(l.right))
+        .attr("y", l => band(l.left))
+
+      let line_indices = d3.range(1,d.nodes.length);
+      matrix.selectAll(".hline")
+        .data(line_indices)
+        .enter().append("line")
+        .attr("class", "hline")
+        .attr("x2", dims.side)
+        .attr("y1", l => band(l))
+        .attr("y2", l => band(l))
+        .attr("stroke-width", dims.lw);
+
+        matrix.selectAll(".vline")
+        .data(line_indices)
+        .enter().append("line")
+        .attr("class", "vline")
+        .attr("y2", dims.side)
+        .attr("x1", l => band(l))
+        .attr("x2", l => band(l))
+        .attr("stroke-width", dims.lw);
+
+      let shift = band.bandwidth() * 0.5 + dims.label_total;
+      svg.append("g")
+        .attr("transform", "translate(" + dims.label + "," + shift + ")")
+        .selectAll('.row_label')
+        .data(d.nodes)
+        .enter().append("text")
+        .attr("class", "row_label")
+        .attr("y", (n, i) => band(i))
+        .text(n => n.label);
+
+      svg.append("g")
+        .attr("transform", "translate(" + shift + "," + dims.label + ")").selectAll('.col_label')
+        .data(d.nodes)
+        .enter().append("text")
+        .attr("class", "col_label")
+        .text(n => n.label)
+        .attr("transform", (n, i) => "translate(" + band(i) + ")rotate(-90)");
+    });
+
+  </script>
+</body>
+
+</html>
