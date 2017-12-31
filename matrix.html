@@ -5,28 +5,19 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title>Dark Matter Graph: Matrix View</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" type="text/css">
+  <link rel="stylesheet" href="style_common.css" type="text/css">
   <style>
-    html {
-      font-family: "Open Sans", sans-serif;
-    }
-
-    svg#canvas {
-      margin: 20px auto;
-      display: block;
-      shape-rendering: crispEdges;
-    }
-
     .row_label,
     .col_label {
       text-anchor: end;
-      font-size: 12px;
+      font-size: 13px;
       dominant-baseline: middle;
+      cursor: pointer;
     }
 
-    .col_label {
+    .cat_label {
       text-anchor: start;
     }
-
     .background {
       fill: #eee;
     }
@@ -35,23 +26,20 @@
       fill: #ddd;
     }
 
-    line {
-      stroke: #fff;
+    .cell {
+      cursor: pointer;
+    }
+
+    .line {
+      fill: #fff;
     }
 
     text.active {
-      fill: #36C;
-      font-weight: bold;
+      fill: #d62728;
     }
 
     .footer {
-      font-size: 80%;
-      text-align: center;
-      margin: 20px auto;
-    }
-
-    .footer span {
-      margin: 0 5px;
+      margin-top: 50px;
     }
   </style>
 </head>
@@ -75,36 +63,70 @@
 
       d.categories.forEach(c => { c.count = 0; });
       d.nodes.forEach(n => { d.categories[n.category].count += 1; });
+      const cat_boundary = d.categories.reduce((acc, cur, i) => {
+        if (i) acc.push(d.categories[i - 1].count + acc[acc.length - 1]); return acc;
+      }, [0]);
 
-      const dims = { 'side': 650, 'label': 200, 'label_pad': 5, 'lw': 2 };
-      dims.width = dims.side + dims.label + dims.label_pad;
-      dims.height = dims.side + dims.label + dims.label_pad;
-      dims.label_total = dims.label + dims.label_pad;
+      const cells = d.links
+        .map(l => ({ 'x': l.left, 'y': l.right, 'left': l.left, 'right': l.right }))
+        .concat(d.links
+          .map(l => ({ 'x': l.right, 'y': l.left, 'left': l.left, 'right': l.right })));
 
-      dims.cell_side = (dims.side - dims.lw * (d.nodes.length - 1)) / d.nodes.length;
+      const lines = d.nodes
+        .map((n, i) => ({ 'index': i, 'vertical': true, 'cat_boundary': (i && cat_boundary[n.category + 1] == i + 1) }))
+        .concat(d.nodes
+          .map((n, i) => ({ 'index': i, 'vertical': false, 'cat_boundary': (i && cat_boundary[n.category + 1] == i + 1) })));
+
+      const dims = { 'cell_side': 20, 'label_top': 170, 'label_left': 200, 'margin_top': 30,'label_pad': 5, 'lw': 2, 'lw_cat': 8 };
+
+      dims.side = dims.cell_side * d.nodes.length + dims.lw * d.nodes.length + dims.lw_cat * (d.categories.length - 1);
       dims.cell_step = dims.cell_side + dims.lw;
-      dims.cell_half_side = dims.cell_side / 2.0;
+      dims.cell_half_side = dims.cell_side / 2;
+      dims.width = dims.side + dims.label_left + dims.label_pad;
+      dims.height = dims.side + dims.label_top + dims.label_pad + dims.margin_top;
 
-      const mouseover1 = p => {
-        d3.selectAll(".row_label").classed("active", (d, i) => i == p.right);
-        d3.selectAll(".col_label").classed("active", (d, i) => i == p.left);
+      const toggle_active = (type, d_this, i, active = false, toggle_lock = false) => {
+        var cell, row_label, col_label;
+        if (type == 'row_label') {
+          row_label = row_labels.filter((_, j) => j == i);
+          cell = cell_objs.filter(c => c.y == i);
+          col_label = col_labels.filter((_, j) => cells.some(c => (c.y == i) && (c.x == j)));
+        }
+        else if (type == 'col_label') {
+          col_label = col_labels.filter((_, j) => j == i);
+          cell = cell_objs.filter(c => c.x == i);
+          row_label = row_labels.filter((_, j) => cells.some(c => (c.x == i) && (c.y == j)));
+        }
+        else if (type == 'cell') {
+          row_label = row_labels.filter((_, j) => j == d_this.y);
+          col_label = col_labels.filter((_, j) => j == d_this.x);
+          cell = cell_objs.filter(c => c == d_this);
+        }
+
+
+        cell.attr("fill", function (l) { return d3.schemeCategory20[d.nodes[l.left].category * 2 + !(d3.select(this).classed("locked") || active)] });
+        row_label.classed("active", function () { return d3.select(this).classed("locked") || active });
+        col_label.classed("active", function () { return d3.select(this).classed("locked") || active });
+
+        if (toggle_lock) {
+          if (!cell.empty()) cell.classed("locked", !cell.classed("locked"));
+          if (!row_label.empty()) row_label.classed("locked", !row_label.classed("locked"));
+          if (!col_label.empty()) col_label.classed("locked", !col_label.classed("locked"));
+        }
       };
 
-      const mouseover2 = p => {
-        d3.selectAll(".row_label").classed("active", (d, i) => i == p.left);
-        d3.selectAll(".col_label").classed("active", (d, i) => i == p.right);
-      };
-
-      const mouseout = p => {
-        d3.selectAll("text").classed("active", false);
+      const clearall = () => {
+        d3.selectAll('.row_label, .col_label, .cell').classed("locked active", false);
+        cell_objs.attr("fill", l => d3.schemeCategory20[d.nodes[l.left].category * 2 + 1]);
       };
 
       const svg = d3.select("svg#canvas")
         .attr("width", dims.width)
-        .attr("height", dims.height);
+        .attr("height", dims.height)
+        .on("click", clearall);
 
       const matrix = svg.append("g")
-        .attr("transform", "translate(" + dims.label_total + "," + dims.label_total + ")");
+        .attr("transform", "translate(" + (dims.width - dims.side) + "," + ( dims.height - dims.side ) + ")");
 
       matrix.append("rect")
         .attr("class", "background")
@@ -117,69 +139,70 @@
         .attr("class", "background_diag")
         .attr("width", c => dims.cell_step * c.count)
         .attr("height", c => dims.cell_step * c.count)
-        .attr("x", (c, i) => dims.cell_step * d.categories.filter((v, j) => j < i).map(v => v.count).reduce((sum, v) => sum + v, 0))
-        .attr("y", (c, i) => dims.cell_step * d.categories.filter((v, j) => j < i).map(v => v.count).reduce((sum, v) => sum + v, 0));
+        .attr("x", (_, i) => dims.cell_step * cat_boundary[i] + dims.lw_cat * i)
+        .attr("y", (_, i) => dims.cell_step * cat_boundary[i] + dims.lw_cat * i);
 
-      matrix.selectAll('.cell1')
-        .data(d.links)
+      const calc_shift = index => index * dims.cell_step + cat_boundary.reduce((acc, cur) => acc + (index >= cur), -1) * dims.lw_cat;
+
+      const cell_objs = matrix.selectAll('.cell')
+        .data(cells)
         .enter().append("rect")
-        .attr("class", "cell1")
+        .attr("class", "cell")
         .attr("width", dims.cell_side)
         .attr("height", dims.cell_side)
-        .attr("x", l => l.left * dims.cell_step)
-        .attr("y", l => l.right * dims.cell_step)
+        .attr("x", l => calc_shift(l.x))
+        .attr("y", l => calc_shift(l.y))
         .attr("fill", l => d3.schemeCategory20[d.nodes[l.left].category * 2 + 1])
-        .on("mouseover", mouseover1)
-        .on("mouseout", mouseout);
+        .on("mouseover", (l, i) => { toggle_active("cell", l, i, true); })
+        .on("click", (l, i) => { toggle_active("cell", l, i, true, true); d3.event.stopPropagation(); })
+        .on("mouseout", (l, i) => { toggle_active("cell", l, i); });
 
-      matrix.selectAll('.cell2')
-        .data(d.links)
+      matrix.selectAll(".line")
+        .data(lines)
         .enter().append("rect")
-        .attr("class", "cell2")
-        .attr("width", dims.cell_side)
-        .attr("height", dims.cell_side)
-        .attr("y", l => l.left * dims.cell_step)
-        .attr("x", l => l.right * dims.cell_step)
-        .attr("fill", l => d3.schemeCategory20[d.nodes[l.left].category * 2])
-        .on("mouseover", mouseover2)
-        .on("mouseout", mouseout);
+        .attr("class", "line")
+        .attr("x", l => l.vertical ? (calc_shift(l.index) + dims.cell_side) : 0)
+        .attr("y", l => l.vertical ? 0 : (calc_shift(l.index) + dims.cell_side))
+        .attr("width", l => l.vertical ? (l.cat_boundary ? (dims.lw + dims.lw_cat) : dims.lw) : dims.side)
+        .attr("height", l => l.vertical ? dims.side : (l.cat_boundary ? (dims.lw + dims.lw_cat) : dims.lw));
 
-      let line_indices = d3.range(1, d.nodes.length);
-      matrix.selectAll(".hline")
-        .data(line_indices)
-        .enter().append("line")
-        .attr("class", "hline")
-        .attr("x2", dims.side)
-        .attr("y1", l => l * dims.cell_step)
-        .attr("y2", l => l * dims.cell_step)
-        .attr("stroke-width", dims.lw);
+      const row_padding = dims.cell_half_side + dims.height - dims.side;
+      const row_group = svg.append("g")
+        .attr("transform", "translate(" + dims.label_left + "," + row_padding + ")");
 
-      matrix.selectAll(".vline")
-        .data(line_indices)
-        .enter().append("line")
-        .attr("class", "vline")
-        .attr("y2", dims.side)
-        .attr("x1", l => l * dims.cell_step)
-        .attr("x2", l => l * dims.cell_step)
-        .attr("stroke-width", dims.lw);
-
-      let shift = dims.cell_half_side + dims.label_total;
-      svg.append("g")
-        .attr("transform", "translate(" + dims.label + "," + shift + ")")
-        .selectAll('.row_label')
+      const row_labels = row_group.selectAll('.row_label')
         .data(d.nodes)
         .enter().append("text")
         .attr("class", "row_label")
-        .attr("y", (n, i) => (i * dims.cell_step))
-        .text(n => n.label);
+        .attr("y", (_, i) => calc_shift(i))
+        .text(n => n.label)
+        .on("mouseover", (l, i) => { toggle_active("row_label", l, i, true); })
+        .on("click", (l, i) => { toggle_active("row_label", l, i, true, true); d3.event.stopPropagation(); })
+        .on("mouseout", (l, i) => { toggle_active("row_label", l, i); });
 
-      svg.append("g")
-        .attr("transform", "translate(" + shift + "," + dims.label + ")").selectAll('.col_label')
+      const col_padding = dims.cell_half_side + dims.width - dims.side + 1;
+      const col_group = svg.append("g")
+        .attr("transform", "translate(" + col_padding + "," + (dims.label_top + dims.margin_top) + ")");
+
+      const col_labels = col_group.selectAll('.col_label')
         .data(d.nodes)
         .enter().append("text")
         .attr("class", "col_label")
         .text(n => n.label)
-        .attr("transform", (n, i) => "translate(" + (i * dims.cell_step) + ")rotate(-90)");
+        .attr("transform", (_, i) => "translate(" + calc_shift(i) + ")rotate(60)")
+        .on("mouseover", (l, i) => { toggle_active("col_label", l, i, true); })
+        .on("click", (l, i) => { toggle_active("col_label", l, i, true, true); d3.event.stopPropagation(); })
+        .on("mouseout", (l, i) => { toggle_active("col_label", l, i); });
+
+      svg.append("g")
+        .attr("transform", "translate(" + (dims.label_left + dims.label_pad) + "," + (dims.margin_top-5) + ")")
+        .selectAll('.cat_label')
+        .data(d.categories)
+        .enter().append("text")
+        .attr("class", "cat_label")
+        .attr("x", (_, i) => calc_shift(cat_boundary[i]))
+        .text(n => n.label);
+
     });
 
   </script>

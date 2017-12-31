@@ -1,0 +1,18 @@
+html {
+  font-family: Arial, Helvetica, sans-serif
+}
+
+svg#canvas {
+  margin: 20px auto;
+  display: block;
+}
+
+.footer {
+	font-size: 80%;
+	text-align: center;
+	margin: 20px auto;
+}
+
+.footer span {
+	margin: 0 5px;
+}
