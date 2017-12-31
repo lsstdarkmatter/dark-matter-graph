@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>LSST Dark Matter Graphic: Network View</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" type="text/css">
+  <link rel="stylesheet" href="style_common.css" type="text/css">
+  <style>
+    .cat_label {
+      text-anchor: middle;
+    }
+
+    .nodetext {
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    .node {
+      fill: #000;
+      fill-opacity: 0.05;
+      stroke: #000;
+      stroke-width: 1px;
+      stroke-opacity: 0.5;
+      cursor: pointer;
+    }
+
+    .link {
+      fill: none;
+      stroke: #000;
+      stroke-width: 2px;
+      stroke-opacity: 0.35;
+      cursor: pointer;
+    }
+
+    .node.active {
+      fill: #36C;
+      fill-opacity: 0.2;
+      stroke: #36C;
+      stroke-width: 1px;
+      stroke-opacity: 1.0;
+    }
+
+    .link.active {
+      stroke: #36C;
+      stroke-width: 3px;
+      stroke-opacity: 1.0;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <svg id="canvas"></svg>
+  </div>
+  <div class="footer">
+    <p>To zoom, hold
+      <code>Ctrl</code> (or
+      <code>Cmd</code> on a Mac) while pressing
+      <code>+</code> to zoom in,
+      <code>-</code> to zoom out.</p>
+    <span>
+      <a href="matrix.html">Click here to see the adjacency matrix</a>.
+    </span>
+    <span>
+      <a href="https://github.com/lsstdarkmatter/dark-matter-graph">Visit the GitHub repo</a> to view source code, request features, and report bugs.
+    </span>
+  </div>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script>
+
+    const tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
+    const show_tooltip = function (text) {
+      tooltip.transition()
+        .duration(100)
+        .style("opacity", .9);
+      tooltip.html(text ? text : "Hmm... I wonder what this means?")
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY) + "px");
+    }
+
+    const hide_tooltip = function () {
+      tooltip.transition()
+        .duration(200)
+        .style("opacity", 0);
+    }
+
+    d3.json('data/data.json', function (error, d) {
+      if (error) throw error;
+
+      d.categories.forEach(c => { c.count = 0; c.max_char = 0; });
+      d.nodes.forEach(n => {
+        const c = d.categories[n.category];
+        c.count += 1;
+        c.max_char = Math.max(c.max_char, n.label.length);
+      });
+
+      dims = { 'width_per_char': 9, 'wpad_inner': 8, 'wpad': 80, 'height_per_node': 50, 'hpad_min': 20, 'top': 50, 'margin': 20 };
+
+      dims.n_cols = d.categories.length;
+      dims.n_rows = Math.max(...d.categories.map(c => c.count));
+
+      dims.widths = d.categories.map(c => c.max_char * dims.width_per_char + dims.wpad_inner);
+      dims.width_total = dims.widths.reduce((acc, cur) => acc + cur, 0) + (dims.n_cols - 1) * dims.wpad;
+      dims.height_total = dims.n_rows * (dims.height_per_node + dims.hpad_min) - dims.hpad_min;
+
+      dims.hpads = d.categories.map(c => (dims.height_total - c.count * dims.height_per_node) / (c.count - 1));
+      dims.col_x = dims.widths.reduce((acc, cur, i) => { acc.push(i ? (acc[i - 1] + dims.widths[i - 1] + dims.wpad) : 0); return acc; }, []);
+
+      d.nodes.forEach(n => {
+        n.x = dims.col_x[n.category];
+        n.y = n.index * (dims.height_per_node + dims.hpads[n.category]) + dims.top;
+        n.center_x = n.x + dims.widths[n.category] / 2.0;
+        n.center_y = n.y + dims.height_per_node / 2.0;
+        n.left_x = n.x;
+        n.right_x = n.x + dims.widths[n.category];
+      });
+
+      const propagate = function (d_this, i, to_activate, to_lock = false, to_left = true, to_right = true) {
+        const is_link = !(d_this.left === undefined);
+        const element = d3.selectAll(is_link ? ".link" : ".node").filter((_, j) => j == i);
+
+        if (!element.classed("locked")) {
+          element.classed("active", to_activate);
+          if (to_lock) element.classed("locked", true);
+        }
+
+        if (is_link) {
+          if (to_left) propagate(d.nodes[d_this.left], d_this.left, to_activate, to_lock, true, false);
+          if (to_right) propagate(d.nodes[d_this.right], d_this.right, to_activate, to_lock, false, true);
+        }
+        else {
+          d.links.forEach((l, j) => {
+            if (l.right == i && to_left) propagate(l, j, to_activate, to_lock, true, false);
+            if (l.left == i && to_right) propagate(l, j, to_activate, to_lock, false, true);
+          });
+        }
+      };
+
+      const mouseover = function (d_this, i) {
+        show_tooltip(d_this.description);
+        propagate(d_this, i, true);
+      };
+      const mouseout = function (d_this, i) {
+        propagate(d_this, i, false);
+      };
+
+      const clearall = function () { d3.selectAll(".node,.link").classed("locked active", false); }
+      const itemclick = function (d_this, i) {
+        clearall();
+        propagate(d_this, i, true, true);
+        d3.event.stopPropagation();
+      }
+
+      const svg = d3.select("svg#canvas")
+        .attr("width", dims.width_total + dims.margin * 2)
+        .attr("height", dims.height_total + dims.top + dims.margin * 2)
+        .on("click", clearall);
+
+      const g = svg.append("g")
+        .attr("transform", "translate(" + dims.margin + "," + dims.margin + ")");
+
+      g.selectAll('.cat_label')
+        .data(d.categories)
+        .enter().append("text")
+        .attr("class", "cat_label")
+        .attr("x", (_, i) => dims.col_x[i] + dims.widths[i] / 2)
+        .attr("y", dims.top - dims.hpad_min * 2.0)
+        .text(c => c.label)
+        .on("mouseover", c => { show_tooltip(c.description); })
+        .on("mouseout", hide_tooltip);
+
+      g.selectAll('.cat_label')
+        .each(function () {
+          const bbox = this.getBBox();
+          const yy = bbox.y + bbox.height + 1;
+          g.append("line").attr("class", "cat_underline")
+            .attr("x1", bbox.x).attr("x2", bbox.x + bbox.width)
+            .attr("y1", yy).attr("y2", yy);
+        });
+
+      g.selectAll('.nodetext')
+        .data(d.nodes)
+        .enter().append("text")
+        .attr("class", "nodetext")
+        .attr("x", n => n.center_x)
+        .attr("y", n => n.center_y)
+        .text(n => n.label);
+
+      g.selectAll('.node')
+        .data(d.nodes)
+        .enter().append("rect")
+        .attr("class", "node")
+        .attr("x", n => n.x)
+        .attr("y", n => n.y)
+        .attr("rx", 5)
+        .attr("ry", 5)
+        .attr("width", n => dims.widths[n.category])
+        .attr("height", dims.height_per_node)
+        .on("mouseover", (n, i) => {
+          show_tooltip(n.description);
+          propagate(n, i, true);
+        })
+        .on("mouseout", (n, i) => {
+          hide_tooltip();
+          propagate(n, i, false);
+        })
+        .on("click", itemclick);
+
+      g.selectAll(".link")
+        .data(d.links)
+        .enter().append("path")
+        .attr("class", "link")
+        .attr("d", d3.linkHorizontal()
+          .source(l => { let n = d.nodes[l.left]; return [n.right_x, n.center_y]; })
+          .target(l => { let n = d.nodes[l.right]; return [n.left_x, n.center_y]; })
+        )
+        .on("mouseover", (n, i) => { propagate(n, i, true); })
+        .on("mouseout", (n, i) => { propagate(n, i, false); })
+        .on("click", itemclick);
+
+    });
+
+  </script>
+</body>
+
+</html>
