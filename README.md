@@ -4,6 +4,9 @@
 
 ➡️ [Click here to see the adjacency matrix](https://lsstdarkmatter.github.io/dark-matter-graph/matrix.html)
 
+![](data/network_graph.png =200x200)
+![](data/adjacency_matrix.png =200x200)
+
 
 This repo hosts a web application that uses [D3.js](https://d3js.org/) to implement the "dark matter graph", as proposed in
 [LSSTDESC/LSSTDarkMatter](https://github.com/LSSTDESC/LSSTDarkMatter) (see [#9](https://github.com/LSSTDESC/LSSTDarkMatter/issues/9),
