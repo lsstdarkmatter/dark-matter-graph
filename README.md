@@ -6,8 +6,8 @@ This repo hosts a web application that uses [D3.js](https://d3js.org/) to implem
 [#11](https://github.com/LSSTDESC/LSSTDarkMatter/issues/11), and
 [#13](https://github.com/LSSTDESC/LSSTDarkMatter/issues/13)).
 
-This idea mostly comes from [@kadrlica](https://github.com/kadrlica), [@aimalz](https://github.com/aimalz), [@yymao](https://github.com/yymao).
-The web app is made by [@yymao](https://yymao.github.io/).
+This design mostly comes from coversations between [@kadrlica](https://github.com/kadrlica), [@aimalz](https://github.com/aimalz), [@yymao](https://github.com/yymao).
+Development of the web app is led by [@yymao](https://yymao.github.io/) with content led by [@kadrlica](https://github.com/kadrlica).
 
 | [Click to see the network diagram](https://lsstdarkmatter.github.io/dark-matter-graph/) | [Click to see the adjacency matrix](https://lsstdarkmatter.github.io/dark-matter-graph/matrix.html) |
 |:--:|:--:| 

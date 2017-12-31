@@ -114,12 +114,14 @@ def prepare_data_from_yaml(yaml_file):
     with open(yaml_file) as f:
         d = yaml.load(f)
 
-    categories = d['Categories']
-
     nodes = OrderedDict()
-    for i, category_key in enumerate(categories):
-        category_obj = d[category_key]
-        for j, node_obj in enumerate(category_obj):
+    for i, category_obj in enumerate(d['Categories']):
+        category_key = category_obj['key']
+        del category_obj['key']
+        if 'title' not in category_obj:
+            category_obj['title'] = category_key
+
+        for j, node_obj in enumerate(d[category_key]):
             node_key = node_obj['key']
             del node_obj['key']
             if node_key in nodes:
@@ -143,7 +145,7 @@ def prepare_data_from_yaml(yaml_file):
         path_obj['path'] = path
 
     return {
-        'categories': [{'label': c} for c in categories],
+        'categories': d['Categories'],
         'nodes': list(nodes.values()),
         'links': list(links.values()),
         'paths': d['Paths'],
@@ -164,7 +166,7 @@ def main(output, yaml_file, use_table, use_matrix):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', metavar='OUTPUT', dest='output', default='data.json')
-    parser.add_argument('--yaml-file', default='data.yaml')
+    parser.add_argument('-y','--yaml-file', default='data.yaml')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-t', dest='use_table', action='store_true')
     group.add_argument('-m', dest='use_matrix', action='store_true')

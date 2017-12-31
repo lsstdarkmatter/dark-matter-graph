@@ -1,40 +1,52 @@
-# Data entry file.
-#
-# Model - A "model" is a theoretical framework describing the physical
-#   mechanism governing the microphysics of dark matter.  Examples:
-#   warm dark matter, axion dark matter, primordial black hole dark
-#   matter, etc.
-#
-# Probe - A "probe" is a physical prediction of how a model would
-#   produce an observable change in the universe that is
-#   distinguishable from the ""standard"" cold, collisionless
-#   LCDM. Examples: minimum subhalo mass, anomalous energy loss
-#   mechanism, halo triaxiliaty
-#
-# Measurement - A "measurement" is a physical observable that can be
-#   measured to test a probe.  Examples: satellite galaxy luminosity
-#   function, galaxy-galaxy strong lensing flux anamolies, etc.
-#
-# Target - A "target" is an astrophysical source or source class which
-#   is used to make a measurement.  Examples: populations of stars,
-#   individual galaxy clusters
+######################################################################
+# Input data file. This file is intended to serve as the primary     # 
+# mechanism for raw data input. As such, it seeks to be a compromise # 
+# between human readable/editable and machine parseable.             # 
+###################################################################### 
 
+# The 'Categories' section defines the types of nodes that the graphic
+# will contain. Node connectivity is currently limited to adjacent
+# node layers.
 Categories:
-  - Models
-  - Probes
-  - Measurements
-  - Targets
+  - key: models
+    label: Models
+    description: >-
+      A "model" is a theoretical framework describing the physical
+      mechanism governing the microphysics of dark matter.  Examples:
+      warm dark matter, axion dark matter, primordial black hole dark
+      matter, etc.
+  - key: probes
+    label: Probes
+    description: >-
+      A "probe" is a physical prediction of how a model would produce
+      an observable change in the universe that is distinguishable
+      from the "standard" cold, collisionless LCDM. Examples: minimum
+      subhalo mass, anomalous energy loss mechanism, halo triaxiliaty,
+      etc.
+  - key: measurements
+    label: Measurements
+    description: >-
+      A "measurement" is a physical observable that can be measured to
+      test a probe.  Examples: satellite galaxy luminosity function,
+      galaxy-galaxy strong lensing flux anomalies, etc.
+  - key: targets
+    label: Targets
+    description: >-
+      A "target" is an astrophysical source or source class which is
+      used to make a measurement.  Examples: populations of stars,
+      individual galaxy clusters
 
-Models:
+models:
   - key: wdm
     label: Warm dark matter
     description: >-
-      Dark matter that acts like a thermal particle
-      with mass less than 1 GeV.
+      Dark matter that behaves like a thermal particle with mass less
+      than 1 GeV.
   - key: sidm
-    label: Self-Interacting dark matter
+    label: Self-interacting dark matter
     description: >-
-        Dark matter possessing a long-range self interaction cross section.
+        Dark matter possessing a long-range self-interaction cross
+        section.
   #- key: ann
   #  label: Annihilating dark matter
   #- key: decay
@@ -44,9 +56,9 @@ Models:
   - key: macho
     label: Massive compact dark matter
   - key: alp
-    label: Axion (or axion-like) dark matter
+    label: Axion-like dark matter
 
-Probes:
+probes:
   - key: min_halo_mass
     label: Minimum subhalo mass
   - key: halo_density
@@ -60,7 +72,7 @@ Probes:
   - key: energy_loss
     label: Anomalous energy loss
 
-Measurements:
+measurements:
   - key: sat_lum_fn
     label: Satellite luminosity function
     description: Satellite galaxy luminosity function.
@@ -79,13 +91,13 @@ Measurements:
   - key: microlens
     label: Stellar microlensing
   - key: nanolens
-    label: Stellar nano-lensing
+    label: Stellar nanolensing
   - key: wdlf
     label: White dwarf luminosity function
   - key: wide_binary
-    label: Population of wide-binary star
+    label: Population of wide-binary stars
 
-Targets:
+targets:
   - key: istars
     label: Individual stars
   - key: pstars
@@ -137,4 +149,5 @@ Paths:
   # MACHOs:
   - path: [macho, quantization, microlens, pstars]
   - path: [macho, quantization, microlens, istars]
-  - path: [macho, halo_density, ]
+  - path: [macho, quantization, wide_binary, pstars]
+  - path: [macho, quantization, wide_binary, istars]
