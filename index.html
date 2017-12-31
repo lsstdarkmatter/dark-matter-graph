@@ -54,7 +54,11 @@
     <svg id="canvas"></svg>
   </div>
   <div class="footer">
-    <p>To zoom, hold <code>Ctrl</code> (or <code>Cmd</code> on a Mac) while pressing <code>+</code> to zoom in, <code>-</code> to zoom out.</p>
+    <p>To zoom, hold
+      <code>Ctrl</code> (or
+      <code>Cmd</code> on a Mac) while pressing
+      <code>+</code> to zoom in,
+      <code>-</code> to zoom out.</p>
     <span>
       <a href="matrix.html">Click here to see the adjacency matrix</a>.
     </span>
@@ -168,6 +172,15 @@
         .text(c => c.label)
         .on("mouseover", c => { show_tooltip(c.description); })
         .on("mouseout", hide_tooltip);
+
+      g.selectAll('.cat_label')
+        .each(function () {
+          const bbox = this.getBBox();
+          const yy = bbox.y + bbox.height + 1;
+          g.append("line").attr("class", "cat_underline")
+            .attr("x1", bbox.x).attr("x2", bbox.x + bbox.width)
+            .attr("y1", yy).attr("y2", yy);
+        });
 
       g.selectAll('.nodetext')
         .data(d.nodes)

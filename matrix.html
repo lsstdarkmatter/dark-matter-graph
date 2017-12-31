@@ -46,7 +46,11 @@
     <svg id="canvas"></svg>
   </div>
   <div class="footer">
-    <p>To zoom, hold <code>Ctrl</code> (or <code>Cmd</code> on a Mac) while pressing <code>+</code> to zoom in, <code>-</code> to zoom out.</p>
+    <p>To zoom, hold
+      <code>Ctrl</code> (or
+      <code>Cmd</code> on a Mac) while pressing
+      <code>+</code> to zoom in,
+      <code>-</code> to zoom out.</p>
     <span>
       <a href="index.html">Click here to see the network diagram</a>.
     </span>
@@ -194,7 +198,7 @@
         .attr("class", "row_label")
         .attr("y", (_, i) => calc_shift(i))
         .text(n => n.label)
-        .on("mouseover", (l, i) => {  show_tooltip(l.description); toggle_active("row_label", l, i, true); })
+        .on("mouseover", (l, i) => { show_tooltip(l.description); toggle_active("row_label", l, i, true); })
         .on("click", (l, i) => { toggle_active("row_label", l, i, true, true); d3.event.stopPropagation(); })
         .on("mouseout", (l, i) => { hide_tooltip(); toggle_active("row_label", l, i); });
 
@@ -212,9 +216,10 @@
         .on("click", (l, i) => { toggle_active("col_label", l, i, true, true); d3.event.stopPropagation(); })
         .on("mouseout", (l, i) => { hide_tooltip(); toggle_active("col_label", l, i); });
 
-      svg.append("g")
-        .attr("transform", "translate(" + (dims.label_left + dims.label_pad) + "," + (dims.margin_top - 5) + ")")
-        .selectAll('.cat_label')
+      const cat_label_g = svg.append("g")
+        .attr("transform", "translate(" + (dims.label_left + dims.label_pad) + "," + (dims.margin_top - 5) + ")");
+
+      cat_label_g.selectAll('.cat_label')
         .data(d.categories)
         .enter().append("text")
         .attr("class", "cat_label")
@@ -223,6 +228,14 @@
         .on("mouseover", c => { show_tooltip(c.description); })
         .on("mouseout", hide_tooltip);
 
+      cat_label_g.selectAll('.cat_label')
+        .each(function () {
+          const bbox = this.getBBox();
+          const yy = bbox.y + bbox.height + 1;
+          cat_label_g.append("line").attr("class", "cat_underline")
+            .attr("x1", bbox.x).attr("x2", bbox.x + bbox.width)
+            .attr("y1", yy).attr("y2", yy);
+        });
     });
 
   </script>
