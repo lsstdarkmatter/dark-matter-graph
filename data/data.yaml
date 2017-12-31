@@ -53,11 +53,17 @@ models:
   #  label: Decaying dark matter
   - key: fuzzy
     label: Fuzzy dark matter
+    description: >-
+      Ultra-light dark matter would appear as a fluid
   - key: macho
     label: Massive compact dark matter
+    description: >-
+      Non-baryonic compact dark matter (i.e., primordial black holes)
   - key: alp
     label: Axion-like dark matter
-
+    description: >-
+      Very light dark matter in the form of axions or axion-like particles
+    
 probes:
   - key: min_halo_mass
     label: Minimum subhalo mass
@@ -94,8 +100,81 @@ measurements:
     label: Stellar nanolensing
   - key: wdlf
     label: White dwarf luminosity function
+    description: >-
+      Anomalous cooling mechanisms would produce a measureable change
+      in the luminosity function of white dwarf stars. LSST will be
+      able to detect faint white dwarfs through color cuts and proper
+      motions.
+  - key: rgb
+    label: Red Giant Branch Populations
+    description: >-
+      Anomalous cooling mechanisms would alter stellar evolution to
+      decrease the time that stars spend in the red giant branch
+      (RGB). LSST could measure the relative abudances of RGB stars
+      and stars in other evolutionary phases in resolved stellar
+      systems.
   - key: wide_binary
     label: Population of wide-binary stars
+    description: >-
+      Wide-binary stars are very loosly bound systems, and hence the
+      lifetime and abundance of these systems is sensitive to the
+      abundance of massive compact perturbers. Will LSST should be
+      able to find candidate wide-binaries through color magnitude
+      cuts?
+    followup: deep spectroscopy
+  - key: cluster_centroid
+    label: Cluster centroid offsets
+    description: >-
+      Colliding clusters offer an opportunity to measure offsets
+      between the dark matter and visible centroids. Such offsets
+      could result from self-interacting dark matter. LSST will find
+      tens of thousands of clusters and could significantly increase
+      the statistical. Measurements may be possible with LSST weak
+      lensing, but it is likely that devoted optical and X-ray
+      followup will be necessary.
+    followup: space imaging, x-ray
+  - key: cluster_splash
+    label: Cluster splashback radius
+    description: >- 
+      The splashback radius of galaxy clusters is a probe of the halo
+      density profile.
+  - key: lyman_alpha
+    label: High-z quasars
+    description: >- 
+      By finding z > 2 quasars and close quasar pairs, LSST can help
+      test small scale structure of dark matter in the high-redshift
+      universe.
+    followup: Deep spectroscopy
+  - key: local_kinematics
+    label: Local stellar kinematics
+    description: >-
+      LSST proper motions should allow for the measurement of local
+      stellar kinematics and the local distribution of dark
+      matter. This is an important normalization for direct detection
+      dark matter experiments.
+  - key: halo_kinematics
+    label: Halo stellar kinematics
+    description: >-
+      LSST will find distant tracers (RR Lyrae, BHB stars, satellite
+      clusters/galaxies, etc.) that will probe the Milky Way dark
+      matter halo at large radius. This will help constrain the halo
+      profile and triaxiality.
+    followup: spectroscopy
+  - key: sn_lensing
+    label: Supernova lensing
+    description: >-
+      LSST can search for anomalous magnification of supernova via
+      gravitational lensing.  This can be used to test microlensing
+      from compact dark matter and caustics from fuzzy dark matter .
+    followup: spectroscopy
+  - key: udgs
+    label: Ultra-diffuse galaxies
+    description: >-
+      Ultra-diffuse galaxies are underluminous for their measured dark
+      matter mass. Their formation may stress stellar-mass-halo-mass
+      relationships. LSST will greatly increase our sensitivity to
+      these galaxies.
+    followup: spectroscopy
 
 targets:
   - key: istars
@@ -110,6 +189,10 @@ targets:
     label: Individual clusters
   - key: pclusters
     label: Population of clusters
+  - key: itransients
+    label: Individual transients
+  - key: ptransients
+    label: Population of transients
 
 Paths:
   # WDM: Subhalo abundance
@@ -137,17 +220,21 @@ Paths:
   - path: [sidm, halo_triaxiality, cluster_wl, iclusters]
   - path: [sidm, halo_triaxiality, cluster_wl, pclusters]
   - path: [sidm, halo_triaxiality, wl_shear, pgalaxies]
-  # Fuzzy: Quantization
-  - path: [fuzzy, quantization, microlens, pstars]
-  - path: [fuzzy, quantization, microlens, istars]
-  # Fuzzy: Min Halo
+
+  # Fuzzy: 
   - path: [fuzzy, min_halo_mass, stream_gaps, pstars]
   - path: [fuzzy, min_halo_mass, flux_ratio, iclusters]
   - path: [fuzzy, min_halo_mass, flux_ratio, igalaxies]
+  - path: [fuzzy, halo_density, sn_lensing, itransients]
+
   # ALPs:
   - path: [alp, energy_loss, wdlf, pstars]
+  - path: [alp, energy_loss, rgb,  pstars]
+  - path: [alp, energy_loss, rgb,  igalaxies]
+
   # MACHOs:
-  - path: [macho, quantization, microlens, pstars]
-  - path: [macho, quantization, microlens, istars]
+  - path: [macho, quantization, microlens, ptransients]
+  - path: [macho, quantization, microlens, itransients]
   - path: [macho, quantization, wide_binary, pstars]
   - path: [macho, quantization, wide_binary, istars]
+  - path: [macho, quantization, sn_lensing, itransients]
