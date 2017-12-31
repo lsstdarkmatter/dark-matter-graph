@@ -126,7 +126,8 @@
         d3.selectAll(".node,.link").classed("locked active", false);
       }
 
-      const itemclick = function (d_this, i) {
+      const itemclick = function (d_this, i, need_sidebar = false) {
+        if (need_sidebar) show_sidebar(d_this); else hide_sidebar();
         clearall();
         propagate(d_this, i, true, true);
         d3.event.stopPropagation();
@@ -179,7 +180,7 @@
         .attr("height", dims.height_per_node)
         .on("mouseover", (n, i) => { propagate(n, i, true); })
         .on("mouseout", (n, i) => { propagate(n, i, false); })
-        .on("click", (n, i) => { show_sidebar(n); itemclick(n, i); });
+        .on("click", (n, i) => { itemclick(n, i, true); });
 
       g.selectAll(".link")
         .data(d.links)
@@ -191,7 +192,7 @@
         )
         .on("mouseover", (n, i) => { propagate(n, i, true); })
         .on("mouseout", (n, i) => { propagate(n, i, false); })
-        .on("click", (n, i) => { hide_sidebar(); itemclick(n, i); });
+        .on("click", (n, i) => { itemclick(n, i); });
 
     });
 

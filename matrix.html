@@ -118,16 +118,22 @@
         }
       };
 
-      const clearall = () => {
-        hide_sidebar();
+      const clearall = (keep_sidebar = false) => {
         d3.selectAll('.row_label, .col_label, .cell').classed("locked active", false);
         cell_objs.attr("fill", l => d3.schemeCategory20[d.nodes[l.left].category * 2 + 1]);
       };
 
+      const itemclick = function (type, d_this, i, need_sidebar = false) {
+        if (need_sidebar) show_sidebar(d_this); else hide_sidebar();
+        clearall();
+        toggle_active(type, d_this, i, true, true);
+        d3.event.stopPropagation();
+      }
+
       const svg = d3.select("svg#canvas")
         .attr("width", dims.width)
         .attr("height", dims.height)
-        .on("click", clearall);
+        .on("click", ()=>{hide_sidebar(); clearall();});
 
       const matrix = svg.append("g")
         .attr("transform", "translate(" + (dims.width - dims.side) + "," + (dims.height - dims.side) + ")");
@@ -158,7 +164,7 @@
         .attr("y", l => calc_shift(l.y))
         .attr("fill", l => d3.schemeCategory20[d.nodes[l.left].category * 2 + 1])
         .on("mouseover", (l, i) => { toggle_active("cell", l, i, true); })
-        .on("click", (l, i) => { hide_sidebar(); toggle_active("cell", l, i, true, true); d3.event.stopPropagation(); })
+        .on("click", (l, i) => { itemclick("cell", l, i); })
         .on("mouseout", (l, i) => { toggle_active("cell", l, i); });
 
       matrix.selectAll(".line")
@@ -181,7 +187,7 @@
         .attr("y", (_, i) => calc_shift(i))
         .text(n => n.label)
         .on("mouseover", (l, i) => { toggle_active("row_label", l, i, true); })
-        .on("click", (l, i) => { show_sidebar(l); toggle_active("row_label", l, i, true, true); d3.event.stopPropagation(); })
+        .on("click", (l, i) => { itemclick("row_label", l, i, true); })
         .on("mouseout", (l, i) => { toggle_active("row_label", l, i); });
 
       const col_padding = dims.cell_half_side + dims.width - dims.side + 1;
@@ -195,7 +201,7 @@
         .text(n => n.label)
         .attr("transform", (_, i) => "translate(" + calc_shift(i) + ")rotate(60)")
         .on("mouseover", (l, i) => { toggle_active("col_label", l, i, true); })
-        .on("click", (l, i) => { show_sidebar(l); toggle_active("col_label", l, i, true, true); d3.event.stopPropagation(); })
+        .on("click", (l, i) => { itemclick("col_label", l, i, true); })
         .on("mouseout", (l, i) => { toggle_active("col_label", l, i); });
 
       const cat_label_g = svg.append("g")
