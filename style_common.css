@@ -22,6 +22,11 @@ svg#canvas {
 	cursor: pointer;
 }
 
+.cat_underline{
+	stroke: #36C;
+	stroke-width: 2px;
+}
+
 div.tooltip {
 	position: absolute;
 	width: 150px;
