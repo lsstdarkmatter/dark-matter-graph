@@ -17,6 +17,11 @@ svg#canvas {
 	margin: 0 5px;
 }
 
+.cat_label {
+	font-weight: bolder;
+	cursor: pointer;
+}
+
 div.tooltip {
 	position: absolute;
 	width: 150px;
