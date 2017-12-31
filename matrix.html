@@ -85,7 +85,7 @@
       dims.width = dims.side + dims.label_left + dims.label_pad;
       dims.height = dims.side + dims.label_top + dims.label_pad + dims.margin_top;
 
-      const toggle_active = (type, d_this, i, active = false, toggle_lock = false) => {
+      const toggle_active = (type, d_this, i, active = false, to_lock = false) => {
         var cell, row_label, col_label;
         if (type == 'row_label') {
           row_label = row_labels.filter((_, j) => j == i);
@@ -108,10 +108,10 @@
         row_label.classed("active", function () { return d3.select(this).classed("locked") || active });
         col_label.classed("active", function () { return d3.select(this).classed("locked") || active });
 
-        if (toggle_lock) {
-          if (!cell.empty()) cell.classed("locked", !cell.classed("locked"));
-          if (!row_label.empty()) row_label.classed("locked", !row_label.classed("locked"));
-          if (!col_label.empty()) col_label.classed("locked", !col_label.classed("locked"));
+        if (to_lock) {
+          cell.classed("locked", true);
+          row_label.classed("locked", true);
+          col_label.classed("locked", true);
         }
       };
 
