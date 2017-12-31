@@ -35,3 +35,5 @@ const hide_sidebar = function () {
         .duration(600)
         .style("left", "-300px");
 }
+
+sidebar.on("click", hide_sidebar);
