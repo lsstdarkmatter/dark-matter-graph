@@ -114,13 +114,14 @@ def prepare_data_from_yaml(yaml_file):
     with open(yaml_file) as f:
         d = yaml.load(f)
 
-    categories = d['Categories']
-
     nodes = OrderedDict()
-    for i, category_obj in enumerate(categories):
+    for i, category_obj in enumerate(d['Categories']):
         category_key = category_obj['key']
-        node_list = d[category_key]
-        for j, node_obj in enumerate(node_list):
+        del category_obj['key']
+        if 'title' not in category_obj:
+            category_obj['title'] = category_key
+
+        for j, node_obj in enumerate(d[category_key]):
             node_key = node_obj['key']
             del node_obj['key']
             if node_key in nodes:
@@ -144,7 +145,7 @@ def prepare_data_from_yaml(yaml_file):
         path_obj['path'] = path
 
     return {
-        'categories': categories,
+        'categories': d['Categories'],
         'nodes': list(nodes.values()),
         'links': list(links.values()),
         'paths': d['Paths'],
