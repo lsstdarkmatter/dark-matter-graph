@@ -62,33 +62,35 @@
   </div>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script>
-    const dims = { 'width': 300, 'wpad': 50, 'height': 50, 'hpad': 10, 'top': 50 };
-
-    dims.width_padded = dims.width + dims.wpad * 2;
-    dims.height_padded = dims.height + dims.hpad * 2;
-    dims.half_height = dims.height * 0.5;
-    dims.half_width_padded = dims.width_padded * 0.5;
-
     d3.json('data/data.json', function (error, d) {
       if (error) throw error;
 
-      d.categories.forEach(c => { c.count = 0; });
-      d.nodes.forEach(n => { d.categories[n.category].count += 1; });
+      d.categories.forEach(c => { c.count = 0; c.max_char = 0;});
+      d.nodes.forEach(n => {
+        const c = d.categories[n.category];
+        c.count += 1;
+        c.max_char = Math.max(c.max_char, n.label.length);
+      });
+
+      dims = { 'width_per_char': 9, 'wpad_inner':8, 'wpad': 80, 'height_per_node': 50, 'hpad_min': 20, 'top': 50, 'margin': 20};
 
       dims.n_cols = d.categories.length;
       dims.n_rows = Math.max(...d.categories.map(c => c.count));
-      dims.height_total = dims.n_rows * dims.height_padded;
-      dims.width_total = dims.n_cols * dims.width_padded;
-      dims.hpads = d.categories.map(c => dims.height_total / 2.0 / c.count - dims.half_height);
-      dims.heights_padded = d.categories.map(c => dims.height_total / c.count);
+
+      dims.widths = d.categories.map(c => c.max_char * dims.width_per_char + dims.wpad_inner);
+      dims.width_total = dims.widths.reduce((acc, cur) => acc+cur, 0) + (dims.n_cols-1) * dims.wpad;
+      dims.height_total = dims.n_rows * (dims.height_per_node + dims.hpad_min) - dims.hpad_min;
+
+      dims.hpads = d.categories.map(c => (dims.height_total - c.count * dims.height_per_node) / (c.count-1));
+      dims.col_x = dims.widths.reduce((acc, cur, i) => {acc.push(i? (acc[i-1] + dims.widths[i-1] + dims.wpad) : 0); return acc;}, []);
 
       d.nodes.forEach(n => {
-        n.x = n.category * dims.width_padded + dims.wpad;
-        n.y = n.index * dims.heights_padded[n.category] + dims.hpads[n.category] + dims.top;
-        n.center_x = n.x + dims.width / 2.0;
-        n.center_y = n.y + dims.height / 2.0;
+        n.x = dims.col_x[n.category];
+        n.y = n.index * (dims.height_per_node + dims.hpads[n.category]) + dims.top;
+        n.center_x = n.x + dims.widths[n.category] / 2.0;
+        n.center_y = n.y + dims.height_per_node / 2.0;
         n.left_x = n.x;
-        n.right_x = n.x + dims.width;
+        n.right_x = n.x + dims.widths[n.category];
       });
 
       const propagate = function (d_this, i, to_activate, to_lock = false, to_left = true, to_right = true) {
@@ -114,8 +116,7 @@
 
       const mouseover = function (d_this, i) { propagate(d_this, i, true); };
       const mouseout = function (d_this, i) { propagate(d_this, i, false); };
-
-      const clearall = function () { d3.selectAll(".node,.link").classed("locked", false).classed("active", false); }
+      const clearall = function () { d3.selectAll(".node,.link").classed("locked active", false); }
       const itemclick = function (d_this, i) {
         clearall();
         propagate(d_this, i, true, true);
@@ -123,19 +124,22 @@
       }
 
       const svg = d3.select("svg#canvas")
-        .attr("width", dims.width_total)
-        .attr("height", dims.height_total + dims.top)
+        .attr("width", dims.width_total + dims.margin*2)
+        .attr("height", dims.height_total + dims.top + dims.margin*2)
         .on("click", clearall);
 
-      svg.selectAll('.cattext')
+      const g = svg.append("g")
+        .attr("transform", "translate(" + dims.margin + "," + dims.margin + ")");
+
+      g.selectAll('.cattext')
         .data(d.categories)
         .enter().append("text")
         .attr("class", "cattext")
-        .attr("x", (c, i) => i * dims.width_padded + dims.half_width_padded)
-        .attr("y", dims.top - dims.hpad * 2.0)
+        .attr("x", (_, i) => dims.col_x[i] + dims.widths[i]/2)
+        .attr("y", dims.top - dims.hpad_min * 2.0)
         .text(c => c.label);
 
-      svg.selectAll('.nodetext')
+      g.selectAll('.nodetext')
         .data(d.nodes)
         .enter().append("text")
         .attr("class", "nodetext")
@@ -143,19 +147,21 @@
         .attr("y", n => n.center_y)
         .text(n => n.label);
 
-      svg.selectAll('.node')
+      g.selectAll('.node')
         .data(d.nodes)
         .enter().append("rect")
         .attr("class", "node")
         .attr("x", n => n.x)
         .attr("y", n => n.y)
-        .attr("width", dims.width)
-        .attr("height", dims.height)
+        .attr("rx", 5)
+        .attr("ry", 5)
+        .attr("width", n => dims.widths[n.category])
+        .attr("height", dims.height_per_node)
         .on("mouseover", mouseover)
         .on("mouseout", mouseout)
         .on("click", itemclick);
 
-      svg.selectAll(".link")
+      g.selectAll(".link")
         .data(d.links)
         .enter().append("path")
         .attr("class", "link")
