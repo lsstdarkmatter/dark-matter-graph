@@ -16,3 +16,14 @@ svg#canvas {
 .footer span {
 	margin: 0 5px;
 }
+
+div.tooltip {
+	position: absolute;
+	width: 150px;
+	padding: 10px;
+	font-size: 80%;
+	background: #c5b0d5;
+	border: 0px;
+	border-radius: 3px;
+	pointer-events: none;
+}
