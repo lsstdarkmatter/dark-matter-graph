@@ -165,7 +165,7 @@ def main(output, yaml_file, use_table, use_matrix):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', metavar='OUTPUT', dest='output', default='data.json')
-    parser.add_argument('--yaml-file', default='data.yaml')
+    parser.add_argument('-y','--yaml-file', default='data.yaml')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-t', dest='use_table', action='store_true')
     group.add_argument('-m', dest='use_matrix', action='store_true')
