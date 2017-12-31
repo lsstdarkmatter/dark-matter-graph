@@ -64,27 +64,47 @@
   </div>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script>
+
+    const tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
+    const show_tooltip = function (text) {
+      tooltip.transition()
+        .duration(100)
+        .style("opacity", .9);
+      tooltip.html(text ? text : "Hmm... I wonder what this means?")
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY) + "px");
+    }
+
+    const hide_tooltip = function () {
+      tooltip.transition()
+        .duration(200)
+        .style("opacity", 0);
+    }
+
     d3.json('data/data.json', function (error, d) {
       if (error) throw error;
 
-      d.categories.forEach(c => { c.count = 0; c.max_char = 0;});
+      d.categories.forEach(c => { c.count = 0; c.max_char = 0; });
       d.nodes.forEach(n => {
         const c = d.categories[n.category];
         c.count += 1;
         c.max_char = Math.max(c.max_char, n.label.length);
       });
 
-      dims = { 'width_per_char': 9, 'wpad_inner':8, 'wpad': 80, 'height_per_node': 50, 'hpad_min': 20, 'top': 50, 'margin': 20};
+      dims = { 'width_per_char': 9, 'wpad_inner': 8, 'wpad': 80, 'height_per_node': 50, 'hpad_min': 20, 'top': 50, 'margin': 20 };
 
       dims.n_cols = d.categories.length;
       dims.n_rows = Math.max(...d.categories.map(c => c.count));
 
       dims.widths = d.categories.map(c => c.max_char * dims.width_per_char + dims.wpad_inner);
-      dims.width_total = dims.widths.reduce((acc, cur) => acc+cur, 0) + (dims.n_cols-1) * dims.wpad;
+      dims.width_total = dims.widths.reduce((acc, cur) => acc + cur, 0) + (dims.n_cols - 1) * dims.wpad;
       dims.height_total = dims.n_rows * (dims.height_per_node + dims.hpad_min) - dims.hpad_min;
 
-      dims.hpads = d.categories.map(c => (dims.height_total - c.count * dims.height_per_node) / (c.count-1));
-      dims.col_x = dims.widths.reduce((acc, cur, i) => {acc.push(i? (acc[i-1] + dims.widths[i-1] + dims.wpad) : 0); return acc;}, []);
+      dims.hpads = d.categories.map(c => (dims.height_total - c.count * dims.height_per_node) / (c.count - 1));
+      dims.col_x = dims.widths.reduce((acc, cur, i) => { acc.push(i ? (acc[i - 1] + dims.widths[i - 1] + dims.wpad) : 0); return acc; }, []);
 
       d.nodes.forEach(n => {
         n.x = dims.col_x[n.category];
@@ -116,8 +136,14 @@
         }
       };
 
-      const mouseover = function (d_this, i) { propagate(d_this, i, true); };
-      const mouseout = function (d_this, i) { propagate(d_this, i, false); };
+      const mouseover = function (d_this, i) {
+        show_tooltip(d_this.description);
+        propagate(d_this, i, true);
+      };
+      const mouseout = function (d_this, i) {
+        propagate(d_this, i, false);
+      };
+
       const clearall = function () { d3.selectAll(".node,.link").classed("locked active", false); }
       const itemclick = function (d_this, i) {
         clearall();
@@ -126,8 +152,8 @@
       }
 
       const svg = d3.select("svg#canvas")
-        .attr("width", dims.width_total + dims.margin*2)
-        .attr("height", dims.height_total + dims.top + dims.margin*2)
+        .attr("width", dims.width_total + dims.margin * 2)
+        .attr("height", dims.height_total + dims.top + dims.margin * 2)
         .on("click", clearall);
 
       const g = svg.append("g")
@@ -137,9 +163,11 @@
         .data(d.categories)
         .enter().append("text")
         .attr("class", "cattext")
-        .attr("x", (_, i) => dims.col_x[i] + dims.widths[i]/2)
+        .attr("x", (_, i) => dims.col_x[i] + dims.widths[i] / 2)
         .attr("y", dims.top - dims.hpad_min * 2.0)
-        .text(c => c.label);
+        .text(c => c.label)
+        .on("mouseover", c => { show_tooltip(c.description); })
+        .on("mouseout", hide_tooltip);
 
       g.selectAll('.nodetext')
         .data(d.nodes)
@@ -159,8 +187,14 @@
         .attr("ry", 5)
         .attr("width", n => dims.widths[n.category])
         .attr("height", dims.height_per_node)
-        .on("mouseover", mouseover)
-        .on("mouseout", mouseout)
+        .on("mouseover", (n, i) => {
+          show_tooltip(n.description);
+          propagate(n, i, true);
+        })
+        .on("mouseout", (n, i) => {
+          hide_tooltip();
+          propagate(n, i, false);
+        })
         .on("click", itemclick);
 
       g.selectAll(".link")
@@ -171,8 +205,8 @@
           .source(l => { let n = d.nodes[l.left]; return [n.right_x, n.center_y]; })
           .target(l => { let n = d.nodes[l.right]; return [n.left_x, n.center_y]; })
         )
-        .on("mouseover", mouseover)
-        .on("mouseout", mouseout)
+        .on("mouseover", (n, i) => { propagate(n, i, true); })
+        .on("mouseout", (n, i) => { propagate(n, i, false); })
         .on("click", itemclick);
 
     });

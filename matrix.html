@@ -19,6 +19,7 @@
       text-anchor: start;
       font-weight: bolder;
     }
+
     .background {
       fill: #eee;
     }
@@ -55,6 +56,27 @@
   </div>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script>
+
+    const tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
+    const show_tooltip = function (text) {
+      tooltip.transition()
+        .duration(100)
+        .style("opacity", .9);
+      tooltip.html(text ? text : "Hmm... I wonder what this means?")
+        .style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY) + "px");
+    }
+
+    const hide_tooltip = function () {
+      tooltip.transition()
+        .duration(200)
+        .style("opacity", 0);
+    }
+
+
     d3.json('data/data.json', function (error, d) {
       if (error) throw error;
 
@@ -74,7 +96,7 @@
         .concat(d.nodes
           .map((n, i) => ({ 'index': i, 'vertical': false, 'cat_boundary': (i && cat_boundary[n.category + 1] == i + 1) })));
 
-      const dims = { 'cell_side': 20, 'label_top': 170, 'label_left': 200, 'margin_top': 30,'label_pad': 5, 'lw': 2, 'lw_cat': 8 };
+      const dims = { 'cell_side': 20, 'label_top': 170, 'label_left': 200, 'margin_top': 30, 'label_pad': 5, 'lw': 2, 'lw_cat': 8 };
 
       dims.side = dims.cell_side * d.nodes.length + dims.lw * d.nodes.length + dims.lw_cat * (d.categories.length - 1);
       dims.cell_step = dims.cell_side + dims.lw;
@@ -100,7 +122,6 @@
           cell = cell_objs.filter(c => c == d_this);
         }
 
-
         cell.attr("fill", function (l) { return d3.schemeCategory20[d.nodes[l.left].category * 2 + !(d3.select(this).classed("locked") || active)] });
         row_label.classed("active", function () { return d3.select(this).classed("locked") || active });
         col_label.classed("active", function () { return d3.select(this).classed("locked") || active });
@@ -123,7 +144,7 @@
         .on("click", clearall);
 
       const matrix = svg.append("g")
-        .attr("transform", "translate(" + (dims.width - dims.side) + "," + ( dims.height - dims.side ) + ")");
+        .attr("transform", "translate(" + (dims.width - dims.side) + "," + (dims.height - dims.side) + ")");
 
       matrix.append("rect")
         .attr("class", "background")
@@ -173,9 +194,9 @@
         .attr("class", "row_label")
         .attr("y", (_, i) => calc_shift(i))
         .text(n => n.label)
-        .on("mouseover", (l, i) => { toggle_active("row_label", l, i, true); })
+        .on("mouseover", (l, i) => {  show_tooltip(l.description); toggle_active("row_label", l, i, true); })
         .on("click", (l, i) => { toggle_active("row_label", l, i, true, true); d3.event.stopPropagation(); })
-        .on("mouseout", (l, i) => { toggle_active("row_label", l, i); });
+        .on("mouseout", (l, i) => { hide_tooltip(); toggle_active("row_label", l, i); });
 
       const col_padding = dims.cell_half_side + dims.width - dims.side + 1;
       const col_group = svg.append("g")
@@ -187,18 +208,20 @@
         .attr("class", "col_label")
         .text(n => n.label)
         .attr("transform", (_, i) => "translate(" + calc_shift(i) + ")rotate(60)")
-        .on("mouseover", (l, i) => { toggle_active("col_label", l, i, true); })
+        .on("mouseover", (l, i) => { show_tooltip(l.description); toggle_active("col_label", l, i, true); })
         .on("click", (l, i) => { toggle_active("col_label", l, i, true, true); d3.event.stopPropagation(); })
-        .on("mouseout", (l, i) => { toggle_active("col_label", l, i); });
+        .on("mouseout", (l, i) => { hide_tooltip(); toggle_active("col_label", l, i); });
 
       svg.append("g")
-        .attr("transform", "translate(" + (dims.label_left + dims.label_pad) + "," + (dims.margin_top-5) + ")")
+        .attr("transform", "translate(" + (dims.label_left + dims.label_pad) + "," + (dims.margin_top - 5) + ")")
         .selectAll('.cat_label')
         .data(d.categories)
         .enter().append("text")
         .attr("class", "cat_label")
         .attr("x", (_, i) => calc_shift(cat_boundary[i]))
-        .text(n => n.label);
+        .text(c => c.label)
+        .on("mouseover", c => { show_tooltip(c.description); })
+        .on("mouseout", hide_tooltip);
 
     });
 
