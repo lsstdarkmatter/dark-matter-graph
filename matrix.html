@@ -59,27 +59,8 @@
     </span>
   </div>
   <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="script_common.js"></script>
   <script>
-
-    const tooltip = d3.select("body").append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
-
-    const show_tooltip = function (text) {
-      tooltip.transition()
-        .duration(100)
-        .style("opacity", .9);
-      tooltip.html(text ? text : "Hmm... I wonder what this means?")
-        .style("left", (d3.event.pageX) + "px")
-        .style("top", (d3.event.pageY) + "px");
-    }
-
-    const hide_tooltip = function () {
-      tooltip.transition()
-        .duration(200)
-        .style("opacity", 0);
-    }
-
 
     d3.json('data/data.json', function (error, d) {
       if (error) throw error;
@@ -138,6 +119,7 @@
       };
 
       const clearall = () => {
+        hide_sidebar();
         d3.selectAll('.row_label, .col_label, .cell').classed("locked active", false);
         cell_objs.attr("fill", l => d3.schemeCategory20[d.nodes[l.left].category * 2 + 1]);
       };
@@ -176,7 +158,7 @@
         .attr("y", l => calc_shift(l.y))
         .attr("fill", l => d3.schemeCategory20[d.nodes[l.left].category * 2 + 1])
         .on("mouseover", (l, i) => { toggle_active("cell", l, i, true); })
-        .on("click", (l, i) => { toggle_active("cell", l, i, true, true); d3.event.stopPropagation(); })
+        .on("click", (l, i) => { hide_sidebar(); toggle_active("cell", l, i, true, true); d3.event.stopPropagation(); })
         .on("mouseout", (l, i) => { toggle_active("cell", l, i); });
 
       matrix.selectAll(".line")
@@ -198,9 +180,9 @@
         .attr("class", "row_label")
         .attr("y", (_, i) => calc_shift(i))
         .text(n => n.label)
-        .on("mouseover", (l, i) => { show_tooltip(l.description); toggle_active("row_label", l, i, true); })
-        .on("click", (l, i) => { toggle_active("row_label", l, i, true, true); d3.event.stopPropagation(); })
-        .on("mouseout", (l, i) => { hide_tooltip(); toggle_active("row_label", l, i); });
+        .on("mouseover", (l, i) => { toggle_active("row_label", l, i, true); })
+        .on("click", (l, i) => { show_sidebar(l); toggle_active("row_label", l, i, true, true); d3.event.stopPropagation(); })
+        .on("mouseout", (l, i) => { toggle_active("row_label", l, i); });
 
       const col_padding = dims.cell_half_side + dims.width - dims.side + 1;
       const col_group = svg.append("g")
@@ -212,9 +194,9 @@
         .attr("class", "col_label")
         .text(n => n.label)
         .attr("transform", (_, i) => "translate(" + calc_shift(i) + ")rotate(60)")
-        .on("mouseover", (l, i) => { show_tooltip(l.description); toggle_active("col_label", l, i, true); })
-        .on("click", (l, i) => { toggle_active("col_label", l, i, true, true); d3.event.stopPropagation(); })
-        .on("mouseout", (l, i) => { hide_tooltip(); toggle_active("col_label", l, i); });
+        .on("mouseover", (l, i) => { toggle_active("col_label", l, i, true); })
+        .on("click", (l, i) => { show_sidebar(l); toggle_active("col_label", l, i, true, true); d3.event.stopPropagation(); })
+        .on("mouseout", (l, i) => { toggle_active("col_label", l, i); });
 
       const cat_label_g = svg.append("g")
         .attr("transform", "translate(" + (dims.label_left + dims.label_pad) + "," + (dims.margin_top - 5) + ")");
