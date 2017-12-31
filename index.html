@@ -7,8 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" type="text/css">
   <link rel="stylesheet" href="style_common.css" type="text/css">
   <style>
-    .cattext {
-      font-weight: bolder;
+    .cat_label {
       text-anchor: middle;
     }
 
@@ -159,10 +158,10 @@
       const g = svg.append("g")
         .attr("transform", "translate(" + dims.margin + "," + dims.margin + ")");
 
-      g.selectAll('.cattext')
+      g.selectAll('.cat_label')
         .data(d.categories)
         .enter().append("text")
-        .attr("class", "cattext")
+        .attr("class", "cat_label")
         .attr("x", (_, i) => dims.col_x[i] + dims.widths[i] / 2)
         .attr("y", dims.top - dims.hpad_min * 2.0)
         .text(c => c.label)
