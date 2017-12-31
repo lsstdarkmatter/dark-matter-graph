@@ -67,26 +67,8 @@
     </span>
   </div>
   <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="script_common.js"></script>
   <script>
-
-    const tooltip = d3.select("body").append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
-
-    const show_tooltip = function (text) {
-      tooltip.transition()
-        .duration(100)
-        .style("opacity", .9);
-      tooltip.html(text ? text : "Hmm... I wonder what this means?")
-        .style("left", (d3.event.pageX) + "px")
-        .style("top", (d3.event.pageY) + "px");
-    }
-
-    const hide_tooltip = function () {
-      tooltip.transition()
-        .duration(200)
-        .style("opacity", 0);
-    }
 
     d3.json('data/data.json', function (error, d) {
       if (error) throw error;
@@ -140,15 +122,10 @@
         }
       };
 
-      const mouseover = function (d_this, i) {
-        show_tooltip(d_this.description);
-        propagate(d_this, i, true);
-      };
-      const mouseout = function (d_this, i) {
-        propagate(d_this, i, false);
-      };
+      const clearall = function () {
+        d3.selectAll(".node,.link").classed("locked active", false);
+      }
 
-      const clearall = function () { d3.selectAll(".node,.link").classed("locked active", false); }
       const itemclick = function (d_this, i) {
         clearall();
         propagate(d_this, i, true, true);
@@ -158,7 +135,7 @@
       const svg = d3.select("svg#canvas")
         .attr("width", dims.width_total + dims.margin * 2)
         .attr("height", dims.height_total + dims.top + dims.margin * 2)
-        .on("click", clearall);
+        .on("click", () => { hide_sidebar(); clearall(); });
 
       const g = svg.append("g")
         .attr("transform", "translate(" + dims.margin + "," + dims.margin + ")");
@@ -200,15 +177,9 @@
         .attr("ry", 5)
         .attr("width", n => dims.widths[n.category])
         .attr("height", dims.height_per_node)
-        .on("mouseover", (n, i) => {
-          show_tooltip(n.description);
-          propagate(n, i, true);
-        })
-        .on("mouseout", (n, i) => {
-          hide_tooltip();
-          propagate(n, i, false);
-        })
-        .on("click", itemclick);
+        .on("mouseover", (n, i) => { propagate(n, i, true); })
+        .on("mouseout", (n, i) => { propagate(n, i, false); })
+        .on("click", (n, i) => { show_sidebar(n); itemclick(n, i); });
 
       g.selectAll(".link")
         .data(d.links)
@@ -220,7 +191,7 @@
         )
         .on("mouseover", (n, i) => { propagate(n, i, true); })
         .on("mouseout", (n, i) => { propagate(n, i, false); })
-        .on("click", itemclick);
+        .on("click", (n, i) => { hide_sidebar(); itemclick(n, i); });
 
     });
 

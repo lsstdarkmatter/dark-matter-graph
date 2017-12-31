@@ -37,3 +37,14 @@ div.tooltip {
 	border-radius: 3px;
 	pointer-events: none;
 }
+
+div.sidebar {
+	position: fixed;
+	top: 0px;
+	bottom: 0px;
+	left: -300px;
+	width: 260px;
+	padding: 20px;
+  background: #c5b0d5;
+  opacity: 0.9;
+}
