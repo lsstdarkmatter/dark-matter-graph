@@ -28,7 +28,7 @@ Below are local installation instructions for developers.
    git pull
    ```
 
-2. Prepare data from the spreadsheet:
+2. Edit `data/data.yaml`, and then convert it to the json file by running:
    ```
    data/prepare_data.py
    ```
