@@ -42,11 +42,13 @@ models:
     description: >-
       Dark matter that behaves like a thermal particle with mass less
       than 1 GeV.
+    references: [1994PhRvL..72...17D]
   - key: sidm
     label: Self-interacting dark matter
     description: >-
         Dark matter possessing a long-range self-interaction cross
         section.
+    references: [2000PhRvL..84.3760S]
   #- key: ann
   #  label: Annihilating dark matter
   #- key: decay
@@ -60,20 +62,47 @@ models:
     label: Massive compact dark matter
     description: >-
       Non-baryonic compact dark matter (i.e., primordial black holes)
+    references: [1974MNRAS.168..399C,2016PhRvL.116t1301B]
   - key: alp
     label: Axion-like dark matter
     description: >-
       Very light dark matter in the form of axions or axion-like particles
-    
+    references: [1977PhRvL..38.1440P]
+
 probes:
   - key: min_halo_mass
-    label: Minimum subhalo mass
-  - key: halo_density
-    label: Halo density profile
-  - key: halo_triaxiality
-    label: Halo triaxiality
+    label: Minimum halo mass
+    description: >-
+      The cold dark matter paradigm predicts that dark matter halos
+      should extend to infinitely low mass. Any cutoff in the halo
+      mass function would indicate a deviation from idealized cold
+      dark matter.
+    references: [2017ARA&A..55..343B]
   - key: subhalo_abundance
     label: Subhalo abundance
+    description: >-
+      The abundance -- i.e., the normalization of the dark matter
+      subhalo mass function -- is predicted by numerical
+      simulations. Deviations from cold, collisionless dark matter
+      could alter the abundance of subhalos. (This probe is related
+      to, but distinct from, the minimum halo mass.)
+    references: [2017ARA&A..55..343B]
+  - key: halo_density
+    label: Halo density profile
+    description: >-
+      Numerical simulations predict that the density dark matter halos
+      should be strongly centrally peaked. Flatter central density
+      profiles could indicate deviations from cold collisionless dark
+      matter (i.e., "core/cusp" problems).
+    references: [2010AdAst2010E...5D, 2011ApJ...742...20W]
+  - key: halo_triaxiality
+    label: Halo triaxiality
+    description: >-
+      Numerical simulations predict the shape of dark matter
+      halos. Deviations in the shape of observed halos (e.g., halo
+      flattening, dark matter disks, etc.) would indicate some
+      deviation from cold, collisionless dark matter.
+    references: [2013MNRAS.430..105P,2013PhRvL.110u1302F]
   - key: quantization
     label: Dark matter quantization
   - key: energy_loss
