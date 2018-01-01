@@ -79,7 +79,7 @@
         c.max_char = Math.max(c.max_char, n.label.length);
       });
 
-      dims = { 'width_per_char': 9, 'wpad_inner': 8, 'wpad': 80, 'height_per_node': 50, 'hpad_min': 20, 'top': 50, 'margin': 20 };
+      dims = { 'width_per_char': 9, 'wpad_inner': 6, 'wpad': 80, 'height_per_node': 40, 'hpad_min': 10, 'top': 50, 'margin': 20 };
 
       dims.n_cols = d.categories.length;
       dims.n_rows = Math.max(...d.categories.map(c => c.count));
