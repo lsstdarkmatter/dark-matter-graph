@@ -14,11 +14,7 @@ svg#canvas {
 .footer {
 	font-size: 80%;
 	text-align: center;
-	margin: 40px auto;
-}
-
-.footer span {
-	margin: 0 5px;
+	margin: 20px auto;
 }
 
 .cat_label {

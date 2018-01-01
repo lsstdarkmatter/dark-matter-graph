@@ -33,7 +33,8 @@
       cursor: pointer;
     }
 
-    .node.active {
+    .node.active,
+    .node.locked {
       fill: #36C;
       fill-opacity: 0.2;
       stroke: #36C;
@@ -41,7 +42,8 @@
       stroke-opacity: 1.0;
     }
 
-    .link.active {
+    .link.active,
+    .link.locked {
       stroke: #36C;
       stroke-width: 3px;
       stroke-opacity: 1.0;
@@ -50,14 +52,14 @@
 </head>
 
 <body>
+  <div class="footer">
+    <a href="index.html">Home</a> |
+    <a href="javascript:void load_instruction('network');">Instructions</a> |
+    <a href="matrix.html">Adjacency matrix</a> |
+    <a href="https://github.com/lsstdarkmatter/dark-matter-graph">GitHub Repo</a>
+  </div>
   <div>
     <svg id="canvas"></svg>
-  </div>
-  <div class="footer">
-      <a href="index.html">Home</a> |
-      <a href="javascript:void load_instruction('network');">Instructions</a> |
-      <a href="matrix.html">Adjacency matrix</a> |
-      <a href="https://github.com/lsstdarkmatter/dark-matter-graph">GitHub Repo</a>
   </div>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="script_common.js"></script>
@@ -67,6 +69,8 @@
 
     d3.json('data/data.json', function (error, d) {
       if (error) throw error;
+
+      d.links = d.links.filter(l => l.direct);
 
       d.categories.forEach(c => { c.count = 0; c.max_char = 0; });
       d.nodes.forEach(n => {
@@ -96,42 +100,29 @@
         n.right_x = n.x + dims.widths[n.category];
       });
 
-      const propagate = function (d_this, i, to_activate, to_lock = false, to_left = true, to_right = true) {
-        const is_link = !(d_this.left === undefined);
-        const element = d3.selectAll(is_link ? ".link" : ".node").filter((_, j) => j == i);
 
-        if (!element.classed("locked")) {
-          element.classed("active", to_activate);
-          if (to_lock) element.classed("locked", true);
-        }
-
-        if (is_link) {
-          if (to_left) propagate(d.nodes[d_this.left], d_this.left, to_activate, to_lock, true, false);
-          if (to_right) propagate(d.nodes[d_this.right], d_this.right, to_activate, to_lock, false, true);
-        }
-        else {
-          d.links.forEach((l, j) => {
-            if (l.right == i && to_left) propagate(l, j, to_activate, to_lock, true, false);
-            if (l.left == i && to_right) propagate(l, j, to_activate, to_lock, false, true);
-          });
-        }
+      const highlight = function (d_this, to_lock = false) {
+        const paths = d_this.paths;
+        const elements = all_elements.filter(d_that => d_that.paths.some(p => paths.includes(p)));
+        elements.classed("active" + (to_lock ? " locked" : ""), true);
       };
 
-      const clearall = function () {
-        d3.selectAll(".node,.link").classed("locked active", false);
+      const clearall = function (to_unlock = false) {
+        all_elements.classed("active" + (to_unlock ? " locked" : ""), false);
       }
 
-      const itemclick = function (d_this, i, need_sidebar = false) {
+      const itemclick = function (d_this, need_sidebar = false) {
         if (need_sidebar) show_sidebar(d_this); else hide_sidebar();
-        clearall();
-        propagate(d_this, i, true, true);
+        clearall(true);
+        highlight(d_this, true);
         d3.event.stopPropagation();
       }
+
 
       const svg = d3.select("svg#canvas")
         .attr("width", dims.width_total + dims.margin * 2)
         .attr("height", dims.height_total + dims.top + dims.margin * 2)
-        .on("click", () => { hide_sidebar(); clearall(); });
+        .on("click", () => { hide_sidebar(); clearall(true); });
 
       const g = svg.append("g")
         .attr("transform", "translate(" + dims.margin + "," + dims.margin + ")");
@@ -173,9 +164,9 @@
         .attr("ry", 5)
         .attr("width", n => dims.widths[n.category])
         .attr("height", dims.height_per_node)
-        .on("mouseover", (n, i) => { propagate(n, i, true); })
-        .on("mouseout", (n, i) => { propagate(n, i, false); })
-        .on("click", (n, i) => { itemclick(n, i, true); });
+        .on("mouseover", n => { highlight(n); })
+        .on("mouseout", () => { clearall(); })
+        .on("click", n => { itemclick(n, true); });
 
       g.selectAll(".link")
         .data(d.links)
@@ -185,9 +176,11 @@
           .source(l => { let n = d.nodes[l.left]; return [n.right_x, n.center_y]; })
           .target(l => { let n = d.nodes[l.right]; return [n.left_x, n.center_y]; })
         )
-        .on("mouseover", (n, i) => { propagate(n, i, true); })
-        .on("mouseout", (n, i) => { propagate(n, i, false); })
-        .on("click", (n, i) => { itemclick(n, i); });
+        .on("mouseover", n => { highlight(n); })
+        .on("mouseout", () => { clearall(); })
+        .on("click", n => { itemclick(n); });
+
+      const all_elements = d3.selectAll(".node,.link");
 
     });
 

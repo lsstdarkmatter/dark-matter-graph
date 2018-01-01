@@ -7,8 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" type="text/css">
   <link rel="stylesheet" href="style_common.css" type="text/css">
   <style>
-    .row_label,
-    .col_label {
+    .label {
       text-anchor: end;
       font-size: 13px;
       dominant-baseline: middle;
@@ -35,21 +34,22 @@
       fill: #fff;
     }
 
-    text.active {
+    .label.active,
+    .label.locked {
       fill: #d62728;
     }
   </style>
 </head>
 
 <body>
+  <div class="footer">
+    <a href="index.html">Home</a> |
+    <a href="javascript:void load_instruction('matrix');">Instructions</a> |
+    <a href="network.html">Network diagram</a> |
+    <a href="https://github.com/lsstdarkmatter/dark-matter-graph">GitHub Repo</a>
+  </div>
   <div>
     <svg id="canvas"></svg>
-  </div>
-  <div class="footer">
-      <a href="index.html">Home</a> |
-      <a href="javascript:void load_instruction('matrix');">Instructions</a> |
-      <a href="network.html">Network diagram</a> |
-      <a href="https://github.com/lsstdarkmatter/dark-matter-graph">GitHub Repo</a>
   </div>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="script_common.js"></script>
@@ -66,16 +66,6 @@
         if (i) acc.push(d.categories[i - 1].count + acc[acc.length - 1]); return acc;
       }, [0]);
 
-      const cells = d.links
-        .map(l => ({ 'x': l.left, 'y': l.right, 'left': l.left, 'right': l.right }))
-        .concat(d.links
-          .map(l => ({ 'x': l.right, 'y': l.left, 'left': l.left, 'right': l.right })));
-
-      const lines = d.nodes
-        .map((n, i) => ({ 'index': i, 'vertical': true, 'cat_boundary': (i && cat_boundary[n.category + 1] == i + 1) }))
-        .concat(d.nodes
-          .map((n, i) => ({ 'index': i, 'vertical': false, 'cat_boundary': (i && cat_boundary[n.category + 1] == i + 1) })));
-
       const dims = { 'cell_side': 20, 'label_top': 170, 'label_left': 200, 'margin_top': 30, 'label_pad': 5, 'lw': 2, 'lw_cat': 8 };
 
       dims.side = dims.cell_side * d.nodes.length + dims.lw * d.nodes.length + dims.lw_cat * (d.categories.length - 1);
@@ -84,7 +74,21 @@
       dims.width = dims.side + dims.label_left + dims.label_pad;
       dims.height = dims.side + dims.label_top + dims.label_pad + dims.margin_top;
 
-      const toggle_active = (type, d_this, i, active = false, to_lock = false) => {
+
+      let get_color_index = l => ((l.direct ? d.nodes[l.left].category : 7) * 2 + 1);
+
+      const cells = d.links
+        .map(l => ({ 'x': l.left, 'y': l.right, 'c': get_color_index(l), 'paths': l.paths }))
+        .concat(d.links
+          .map(l => ({ 'x': l.right, 'y': l.left, 'c': get_color_index(l), 'paths': l.paths })));
+
+      const lines = d.nodes
+        .map((n, i) => ({ 'index': i, 'vertical': true, 'cat_boundary': (i && cat_boundary[n.category + 1] == i + 1) }))
+        .concat(d.nodes
+          .map((n, i) => ({ 'index': i, 'vertical': false, 'cat_boundary': (i && cat_boundary[n.category + 1] == i + 1) })));
+
+
+      const highlight = (type, d_this, i, to_lock = false) => {
         var cell, row_label, col_label;
         if (type == 'row_label') {
           row_label = row_labels.filter((_, j) => j == i);
@@ -101,34 +105,30 @@
           col_label = col_labels.filter((_, j) => j == d_this.x);
           cell = cell_objs.filter(c => c == d_this);
         }
-
-        cell.attr("fill", function (l) { return d3.schemeCategory20[d.nodes[l.left].category * 2 + !(d3.select(this).classed("locked") || active)] });
-        row_label.classed("active", function () { return d3.select(this).classed("locked") || active });
-        col_label.classed("active", function () { return d3.select(this).classed("locked") || active });
-
-        if (to_lock) {
-          cell.classed("locked", true);
-          row_label.classed("locked", true);
-          col_label.classed("locked", true);
-        }
+        row_label.classed("active" + (to_lock ? " locked" : ""), true);
+        col_label.classed("active" + (to_lock ? " locked" : ""), true);
+        cell.attr("fill", c => d3.schemeCategory20[c.c - 1]);
+        if (to_lock) cell.classed("locked", true);
       };
 
-      const clearall = (keep_sidebar = false) => {
-        d3.selectAll('.row_label, .col_label, .cell').classed("locked active", false);
-        cell_objs.attr("fill", l => d3.schemeCategory20[d.nodes[l.left].category * 2 + 1]);
-      };
+      const clearall = function (to_unlock = false) {
+        row_labels.classed("active" + (to_unlock ? " locked" : ""), false);
+        col_labels.classed("active" + (to_unlock ? " locked" : ""), false);
+        if (to_unlock) cell_objs.classed("locked", false);
+        cell_objs.attr("fill", function (c) { return d3.schemeCategory20[c.c - (d3.select(this).classed("locked"))]; });
+      }
 
-      const itemclick = function (type, d_this, i, need_sidebar = false) {
-        if (need_sidebar) show_sidebar(d_this); else hide_sidebar();
-        clearall();
-        toggle_active(type, d_this, i, true, true);
+      const itemclick = function (type, d_this, i) {
+        if (type != "cell") show_sidebar(d_this); else hide_sidebar();
+        clearall(true);
+        highlight(type, d_this, i, true);
         d3.event.stopPropagation();
       }
 
       const svg = d3.select("svg#canvas")
         .attr("width", dims.width)
         .attr("height", dims.height)
-        .on("click", () => { hide_sidebar(); clearall(); });
+        .on("click", () => { hide_sidebar(); clearall(true); });
 
       const matrix = svg.append("g")
         .attr("transform", "translate(" + (dims.width - dims.side) + "," + (dims.height - dims.side) + ")");
@@ -157,10 +157,10 @@
         .attr("height", dims.cell_side)
         .attr("x", l => calc_shift(l.x))
         .attr("y", l => calc_shift(l.y))
-        .attr("fill", l => d3.schemeCategory20[d.nodes[l.left].category * 2 + 1])
-        .on("mouseover", (l, i) => { toggle_active("cell", l, i, true); })
+        .attr("fill", l => d3.schemeCategory20[l.c])
+        .on("mouseover", (l, i) => { highlight("cell", l, i); })
         .on("click", (l, i) => { itemclick("cell", l, i); })
-        .on("mouseout", (l, i) => { toggle_active("cell", l, i); });
+        .on("mouseout", l => { clearall(); });
 
       matrix.selectAll(".line")
         .data(lines)
@@ -178,12 +178,12 @@
       const row_labels = row_group.selectAll('.row_label')
         .data(d.nodes)
         .enter().append("text")
-        .attr("class", "row_label")
+        .attr("class", "label row_label")
         .attr("y", (_, i) => calc_shift(i))
         .text(n => n.label)
-        .on("mouseover", (l, i) => { toggle_active("row_label", l, i, true); })
-        .on("click", (l, i) => { itemclick("row_label", l, i, true); })
-        .on("mouseout", (l, i) => { toggle_active("row_label", l, i); });
+        .on("mouseover", (l, i) => { highlight("row_label", l, i); })
+        .on("click", (l, i) => { itemclick("row_label", l, i); })
+        .on("mouseout", l => { clearall(); });
 
       const col_padding = dims.cell_half_side + dims.width - dims.side + 1;
       const col_group = svg.append("g")
@@ -192,17 +192,17 @@
       const col_labels = col_group.selectAll('.col_label')
         .data(d.nodes)
         .enter().append("text")
-        .attr("class", "col_label")
+        .attr("class", "label col_label")
         .text(n => n.label)
         .attr("transform", (_, i) => "translate(" + calc_shift(i) + ")rotate(60)")
-        .on("mouseover", (l, i) => { toggle_active("col_label", l, i, true); })
-        .on("click", (l, i) => { itemclick("col_label", l, i, true); })
-        .on("mouseout", (l, i) => { toggle_active("col_label", l, i); });
+        .on("mouseover", (l, i) => { highlight("col_label", l, i); })
+        .on("click", (l, i) => { itemclick("col_label", l, i); })
+        .on("mouseout", l => { clearall(); });
 
       const cat_label_g = svg.append("g")
         .attr("transform", "translate(" + (dims.label_left + dims.label_pad) + "," + (dims.margin_top - 5) + ")");
 
-      cat_label_g.selectAll('.cat_label')
+      cat_label_g.selectAll(".cat_label")
         .data(d.categories)
         .enter().append("text")
         .attr("class", "cat_label")
@@ -211,7 +211,7 @@
         .on("mouseover", c => { show_tooltip(c.description); })
         .on("mouseout", hide_tooltip);
 
-      cat_label_g.selectAll('.cat_label')
+      cat_label_g.selectAll(".cat_label")
         .each(function () {
           const bbox = this.getBBox();
           const yy = bbox.y + bbox.height + 1;
@@ -219,6 +219,7 @@
             .attr("x1", bbox.x).attr("x2", bbox.x + bbox.width)
             .attr("y1", yy).attr("y2", yy);
         });
+
     });
 
   </script>

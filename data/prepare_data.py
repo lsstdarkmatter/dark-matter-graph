@@ -3,6 +3,7 @@ import csv
 import json
 import bisect
 from collections import OrderedDict
+from itertools import combinations
 import argparse
 import yaml
 import requests
@@ -126,21 +127,29 @@ def prepare_data_from_yaml(yaml_file):
             del node_obj['key']
             if node_key in nodes:
                 raise ValueError('{} repeatedly defined!'.format(node_key))
-            if 'title' not in node_obj:
-                node_obj['title'] = node_key
+            if 'label' not in node_obj:
+                node_obj['label'] = node_key
             node_obj['category'] = i
             node_obj['index'] = j
+            node_obj['paths'] = []
             nodes[node_key] = node_obj
 
     nodes_keys = list(nodes.keys())
+    category_indices = tuple(range(len(d['Categories'])))
 
     links = {}
     for i, path_obj in enumerate(d['Paths']):
         path = path_obj['path']
+
+        assert tuple((nodes.get(k, {}).get('category') for k in path)) == category_indices, '{} is not valid'.format(path)
+        for k in path:
+            nodes[k]['paths'].append(i)
+
         path = [nodes_keys.index(k) for k in path]
-        for link_key in zip(path[:-1], path[1:]):
+        for comb in combinations(enumerate(path), 2):
+            cat, link_key = zip(*comb)
             if link_key not in links:
-                links[link_key] = {'left': link_key[0], 'right': link_key[1], 'paths':[]}
+                links[link_key] = {'left': link_key[0], 'right': link_key[1], 'direct':(cat[1] == cat[0]+1), 'paths':[]}
             links[link_key]['paths'].append(i)
         path_obj['path'] = path
 
