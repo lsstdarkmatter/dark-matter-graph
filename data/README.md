@@ -1,5 +1,33 @@
+# Data Format
 
-## Format of `data.json`
+## `data.yaml`
+
+`data.yaml` is the input data file in YAML format.
+Any edit to the display should be made in `data.yaml`.
+
+Here's a minimal example:
+
+```
+Categories:
+  - key: model
+    label: Models
+  - key: probe
+    label: Probes
+
+model:
+  - key: sidm
+    label: SIDM
+  - key: den
+    label: Halo Density Profile
+
+Paths:
+  - path: [sidm, den]
+```
+
+## `data.json`
+
+`data.json` is the data file used by the web app. It should be generated from `data.yaml` using the `prepare_data.py` script.
+Here we detail the specs of `data.json`.
 
 - `data.json` should be a json object with four attributes `categories`, `nodes`, `links`, and `path`. Each of them should be an array of objects.
 - Objects in the `categories` array should have the `label` attribute.
@@ -12,8 +40,8 @@ Here's a minimal example:
 {
   "categories":
   [
-    {"label": "Model"},
-    {"label": "Probe"}
+    {"label": "Models"},
+    {"label": "Probes"}
   ],
 
   "nodes":

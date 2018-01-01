@@ -11,7 +11,7 @@ Web app development is led by [@yymao](https://yymao.github.io/) with content cu
 
 | [Click to see the network diagram](https://lsstdarkmatter.github.io/dark-matter-graph/network.html) | [Click to see the adjacency matrix](https://lsstdarkmatter.github.io/dark-matter-graph/matrix.html) |
 |:--:|:--:|
-| <a href="https://lsstdarkmatter.github.io/dark-matter-graph/network.html"><img src="data/network_graph.png" width="250"/></a> | <a href="https://lsstdarkmatter.github.io/dark-matter-graph/matrix.html"><img src="data/adjacency_matrix.png" width="250"/></a> |
+| <a href="https://lsstdarkmatter.github.io/dark-matter-graph/network.html"><img src="static/thumbnail_network.png" width="250"/></a> | <a href="https://lsstdarkmatter.github.io/dark-matter-graph/matrix.html"><img src="static/thumbnail_matrix.png" width="250"/></a> |
 
 ## Local Installation
 
@@ -30,9 +30,9 @@ Below are local installation instructions for developers.
 
 2. Prepare data from the spreadsheet:
    ```
-   data/prepare_data.py --yaml-file data/data.yaml -o data/data.json
+   data/prepare_data.py
    ```
-   ([See this readme](data/README.md) to learn more the format of `data.json`.)
+   ([See this readme](data/README.md) to learn more the format of `data.yaml` and `data.json`.)
 
 3. Start a http server:
    ```
