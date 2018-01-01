@@ -17,6 +17,16 @@ svg#canvas {
 	margin: 0 5px;
 }
 
+.cat_label {
+	font-weight: bolder;
+	cursor: pointer;
+}
+
+.cat_underline{
+	stroke: #36C;
+	stroke-width: 2px;
+}
+
 div.tooltip {
 	position: absolute;
 	width: 150px;
@@ -26,4 +36,15 @@ div.tooltip {
 	border: 0px;
 	border-radius: 3px;
 	pointer-events: none;
+}
+
+div.sidebar {
+	position: fixed;
+	top: 0px;
+	bottom: 0px;
+	left: -300px;
+	width: 260px;
+	padding: 20px;
+  background: #c5b0d5;
+  opacity: 0.9;
 }
