@@ -54,7 +54,7 @@ const hide_sidebar = function () {
 sidebar.on("click", hide_sidebar);
 
 const load_instruction = function (name) {
-  d3.text("instructions/" + name + ".html", function (error, ht) {
+  d3.text("static/instruction_" + name + ".html", function (error, ht) {
     if (error) throw error;
     show_sidebar(ht, true);
   });
