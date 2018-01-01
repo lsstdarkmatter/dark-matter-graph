@@ -1,6 +1,6 @@
 # LSST Dark Matter Graphic
 
-This repo hosts a web application that uses [D3.js](https://d3js.org/) to implement the LSST "dark matter graphic", as proposed in [LSSTDESC/LSSTDarkMatter](https://github.com/LSSTDESC/LSSTDarkMatter) 
+This repo hosts a web application that uses [D3.js](https://d3js.org/) to implement the LSST "dark matter graphic", as proposed in [LSSTDESC/LSSTDarkMatter](https://github.com/LSSTDESC/LSSTDarkMatter)
 (see [#9](https://github.com/LSSTDESC/LSSTDarkMatter/issues/9),
 [#10](https://github.com/LSSTDESC/LSSTDarkMatter/issues/10),
 [#11](https://github.com/LSSTDESC/LSSTDarkMatter/issues/11), and
@@ -10,7 +10,7 @@ This design concept comes largely from coversations between [@kadrlica](https://
 Web app development is led by [@yymao](https://yymao.github.io/) with content curated by [@kadrlica](https://github.com/kadrlica).
 
 | [Click to see the network diagram](https://lsstdarkmatter.github.io/dark-matter-graph/network.html) | [Click to see the adjacency matrix](https://lsstdarkmatter.github.io/dark-matter-graph/matrix.html) |
-|:--:|:--:| 
+|:--:|:--:|
 | <a href="https://lsstdarkmatter.github.io/dark-matter-graph/network.html"><img src="data/network_graph.png" width="250"/></a> | <a href="https://lsstdarkmatter.github.io/dark-matter-graph/matrix.html"><img src="data/adjacency_matrix.png" width="250"/></a> |
 
 ## Local Installation
@@ -32,6 +32,7 @@ Below are local installation instructions for developers.
    ```
    data/prepare_data.py --yaml-file data/data.yaml -o data/data.json
    ```
+   ([See this readme](data/README.md) to learn more the format of `data.json`.)
 
 3. Start a http server:
    ```
@@ -47,35 +48,3 @@ Below are local installation instructions for developers.
 
    _Note: if you get an `OSError: [Errno 98] Address already in use`, add some 4- or 5-digit numbers after the command, e.g., `python -m http.server 12345`_.
 
-## Format of `data.json`
-
-- `data.json` should be a json object with four attributes `categories`, `nodes`, `links`, and `path`. Each of them should be an array of objects.
-- Objects in the `categories` array should have the `label` attribute.
-- Objects in the `nodes` array should have (1) the `label` attribute, (2) the `category` attribute that indicates the category this node belongs to, using the corresponding index as in the `categories` array, and (3) the `index` attribute that indicates the index of this node within its category.
-- Objects in the `links` array should have the `left` and `right` attributes, indicating the two nodes it links together. Both `left` and `right` should use the corresponding indices as in the `nodes` array.
-- Each "path" is a collection of "links". Specification on `path` object TBD.
-
-Here's a minimal example:
-```json
-{
-  "categories":
-  [
-    {"label": "Model"},
-    {"label": "Probe"}
-  ],
-
-  "nodes":
-  [
-    {"category": 0, "index": 0, "label": "SIDM"},
-    {"category": 1, "index": 0, "label": "Halo Density Profile"}
-  ],
-
-  "links": [
-    {"left": 0, "right": 1, "paths": [0]}
-  ],
-
-  "paths": [
-    {"path": [0, 1]}
-  ]
-}
-```
