@@ -103,7 +103,7 @@
 
       const highlight = function (d_this, to_lock = false) {
         const paths = d_this.paths;
-        const elements = all_elements.filter(d_that => d_that.paths.some(p => paths.includes(p)));
+        const elements = all_elements.filter(d_that => (d_that.paths.some(p => paths.includes(p)) || d_this == d_that));
         elements.classed("active" + (to_lock ? " locked" : ""), true);
       };
 
