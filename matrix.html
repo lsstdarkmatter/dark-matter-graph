@@ -46,21 +46,16 @@
     <svg id="canvas"></svg>
   </div>
   <div class="footer">
-    <p>To zoom, hold
-      <code>Ctrl</code> (or
-      <code>Cmd</code> on a Mac) while pressing
-      <code>+</code> to zoom in,
-      <code>-</code> to zoom out.</p>
-    <span>
-      <a href="network.html">Click here to see the network diagram</a>.
-    </span>
-    <span>
-      <a href="https://github.com/lsstdarkmatter/dark-matter-graph">Visit the GitHub repo</a> to view source code, request features, and report bugs.
-    </span>
+      <a href="index.html">Home</a> |
+      <a href="javascript:void load_instruction('matrix');">Instructions</a> |
+      <a href="network.html">Network diagram</a> |
+      <a href="https://github.com/lsstdarkmatter/dark-matter-graph">GitHub Repo</a>
   </div>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="script_common.js"></script>
   <script>
+
+    load_instruction("matrix");
 
     d3.json('data/data.json', function (error, d) {
       if (error) throw error;
@@ -133,7 +128,7 @@
       const svg = d3.select("svg#canvas")
         .attr("width", dims.width)
         .attr("height", dims.height)
-        .on("click", ()=>{hide_sidebar(); clearall();});
+        .on("click", () => { hide_sidebar(); clearall(); });
 
       const matrix = svg.append("g")
         .attr("transform", "translate(" + (dims.width - dims.side) + "," + (dims.height - dims.side) + ")");
