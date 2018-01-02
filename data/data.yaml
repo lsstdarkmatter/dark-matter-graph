@@ -61,8 +61,8 @@ models:
   - key: macho
     label: Massive compact dark matter
     description: >-
-      Non-baryonic compact dark matter (i.e., primordial black holes)
-    references: [1974MNRAS.168..399C,2016PhRvL.116t1301B]
+      Non-baryonic compact dark matter (e.g., primordial black holes, Q-balls, etc.)
+    references: [1974MNRAS.168..399C,2016PhRvL.116t1301B,1998PhLB..418...46K]
   - key: alp
     label: Axion-like dark matter
     description: >-
@@ -113,7 +113,6 @@ probes:
       occur as the fundamental unit of dark matter (e.g., primordial
       black holes) or as a composite objects (e.g. Q-balls).  (We
       don't have a great name for this probe...)
-    references: [1998PhLB..418...46K]
   - key: energy_loss
     label: Anomalous energy loss
     description: >-
