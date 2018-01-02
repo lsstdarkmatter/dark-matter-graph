@@ -46,6 +46,9 @@ Below are local installation instructions for developers.
    ```
    ([See this readme](data/README.md) to learn more the format of `data.yaml` and `data.json`.)
 
+   _Note: this step is slow because it connects to ADS online to resolve references.
+   To speed things up for testing purposes, add option `--no-ads` to the command._
+
 3. Start a http server:
    ```
    python -m http.server

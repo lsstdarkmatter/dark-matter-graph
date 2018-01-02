@@ -5,10 +5,28 @@ from collections import OrderedDict
 from itertools import combinations
 import argparse
 import yaml
+import requests
+try:
+    from html import escape
+except ImportError:
+    from cgi import escape
 
 __all__ = ['prepare_data_from_yaml', 'main']
 
-def prepare_data_from_yaml(yaml_file):
+_ads_url = 'http://adsabs.harvard.edu/cgi-bin/nph-abs_connect?bibcode={}&data_type=Custom&format=%251m%20(%25y)%3A%3A%3A%25r&nocookieset=1'
+
+def format_reference(bibcodes, use_ads=True):
+    if use_ads:
+        results = requests.get(_ads_url.format(requests.utils.quote(','.join(bibcodes)))).text.strip().split('\n\n')
+        assert results[0] == 'Query Results from the ADS Database', 'something went wrong when querying ADS about {}'.format(bibcodes)
+        assert len(results) == len(bibcodes) + 2, 'something went wrong when querying ADS about {}'.format(bibcodes)
+        results = {u: t for t, _, u in (r.strip().partition(':::') for r in results[2:])}
+    else:
+        results = {}
+    return [{'text': escape(results.get(u, u)), 'ads': escape(requests.utils.quote(u))} for u in bibcodes]
+
+
+def prepare_data_from_yaml(yaml_file, use_ads):
     with open(yaml_file) as f:
         d = yaml.load(f)
 
@@ -29,6 +47,8 @@ def prepare_data_from_yaml(yaml_file):
             node_obj['category'] = i
             node_obj['index'] = j
             node_obj['paths'] = []
+            if 'references' in node_obj:
+                node_obj['references'] = format_reference(node_obj['references'], use_ads)
             nodes[node_key] = node_obj
 
     nodes_keys = list(nodes.keys())
@@ -58,9 +78,9 @@ def prepare_data_from_yaml(yaml_file):
     }
 
 
-def main(output, yaml_file, **kwargs):
+def main(output, yaml_file, use_ads, **kwargs):
     with open(output, 'w') as f:
-        json.dump(prepare_data_from_yaml(yaml_file), f)
+        json.dump(prepare_data_from_yaml(yaml_file, use_ads), f)
 
 
 if __name__ == '__main__':
@@ -68,4 +88,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', '--output', metavar='OUTPUT_FILE', default=os.path.join(this_dir, 'data.json'))
     parser.add_argument('-y', '--yaml-file', metavar='YAML_FILE', default=os.path.join(this_dir, 'data.yaml'))
+    parser.add_argument('--no-ads', dest='use_ads', action='store_false')
     main(**vars(parser.parse_args()))
