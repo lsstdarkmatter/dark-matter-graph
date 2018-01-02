@@ -67,7 +67,7 @@ models:
     label: Axion-like dark matter
     description: >-
       Very light dark matter in the form of axions or axion-like particles
-    references: [1977PhRvL..38.1440P]
+    references: [1977PhRvL..38.1440P,1990PhR...198....1R]
 
 probes:
   - key: min_halo_mass
@@ -105,8 +105,23 @@ probes:
     references: [2013MNRAS.430..105P,2013PhRvL.110u1302F]
   - key: quantization
     label: Dark matter quantization
+    description: >-
+      If a significant fraction of dark matter resides in macroscopic
+      compact objects then it can have measureable effects through
+      gravitational lensing and the disruption of weakly bound
+      gravitational systems. This macroscopic "quantization" could
+      occur as the fundamental unit of dark matter (e.g., primordial
+      black holes) or as a composite objects (e.g. Q-balls).  (We
+      don't have a great name for this probe...)
+    references: [1998PhLB..418...46K]
   - key: energy_loss
     label: Anomalous energy loss
+    description: >-
+      If dark matter is composed of a light and weakly-interacting
+      particle, then it could escape from stellar interiors carrying
+      thermal energy. This anomalous energy loss mechanism would lead
+      to observable changes in the evolution of stars.
+    references: [1990PhR...198....1R,2008LNP...741...51R]
 
 measurements:
   - key: sat_lum_fn
@@ -187,6 +202,7 @@ measurements:
       in the luminosity function of white dwarf stars. LSST will be
       able to detect faint white dwarfs through color cuts and proper
       motions.
+    references: [2008ApJ...682L.109I]
   - key: rgb
     label: Red Giant Branch Populations
     description: >-
@@ -195,6 +211,7 @@ measurements:
       (RGB). LSST could measure the relative abudances of RGB stars
       and stars in other evolutionary phases in resolved stellar
       systems.
+    references: [2014PhRvL.113s1302A]
   - key: wide_binary
     label: Population of wide-binary stars
     description: >-
@@ -256,6 +273,7 @@ measurements:
       matter mass. Their formation may stress stellar-mass-halo-mass
       relationships. LSST will greatly increase our sensitivity to
       these galaxies.
+    references: [2016ApJ...828L...6V]
     followup: spectroscopy
 
 targets:
@@ -275,9 +293,9 @@ targets:
     label: Individual galaxies
     description: >-
       Studies of very rare or extreme galaxies. Individual galaxy
-      studies may require large followup campaigns. For example: the
-      Dragonfly 44 ultra-diffuse galaxy
-    references: [2016ApJ...828L...6V]
+      studies may require large followup campaigns. For example: 
+        galaxy-galaxy strong lenses, extreme ultra-diffuse galaxies,
+        extreme ultra-faint galaxies.
   - key: pgalaxies
     label: Population of galaxies
     description: >-
@@ -310,7 +328,7 @@ targets:
     references: [2017arXiv171202240Z]
 
 Paths:
-  # WDM: Subhalo abundance
+  # WDM: Halo abundance
   - path: [wdm, subhalo_abundance, sat_lum_fn, pstars]
   - path: [wdm, subhalo_abundance, sat_lum_fn, pgalaxies]
   - path: [wdm, subhalo_abundance, stream_gaps, pstars]
@@ -318,6 +336,8 @@ Paths:
   - path: [wdm, subhalo_abundance, flux_ratio, igalaxies]
   - path: [wdm, subhalo_abundance, nanolens, istars]
   - path: [wdm, subhalo_abundance, nanolens, pstars]
+  - path: [wdm, subhalo_abundance, udgs, pgalaxies]
+
   # WDM: Minimum halo mass
   - path: [wdm, min_halo_mass, sat_lum_fn, pstars]
   - path: [wdm, min_halo_mass, sat_lum_fn, pgalaxies]
@@ -326,6 +346,8 @@ Paths:
   - path: [wdm, min_halo_mass, flux_ratio, igalaxies]
   - path: [wdm, min_halo_mass, nanolens, istars]
   - path: [wdm, min_halo_mass, nanolens, pstars]
+  - path: [wdm, min_halo_mass, lyman_alpha, igalaxies]
+
   # SIDM: Halo density
   - path: [sidm, halo_density, stream_orbits, pstars]
   - path: [sidm, halo_density, cluster_sl, iclusters]
@@ -334,6 +356,7 @@ Paths:
   - path: [sidm, halo_density, splashback, pclusters]
   - path: [sidm, halo_density, cluster_centroid, iclusters]
   - path: [sidm, halo_density, cluster_centroid, pclusters]
+  - path: [sidm, halo_density, local_kinematics, pstars]
 
   # SIDM: Halo triaxiality
   - path: [sidm, halo_triaxiality, stream_orbits, pstars]
