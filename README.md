@@ -9,9 +9,21 @@ This repo hosts a web application that uses [D3.js](https://d3js.org/) to implem
 This design concept comes largely from coversations between [@kadrlica](https://github.com/kadrlica), [@aimalz](https://github.com/aimalz), [@yymao](https://github.com/yymao).
 Web app development is led by [@yymao](https://yymao.github.io/) with content curated by [@kadrlica](https://github.com/kadrlica).
 
-| [Click to see the network diagram](https://lsstdarkmatter.github.io/dark-matter-graph/network.html) | [Click to see the adjacency matrix](https://lsstdarkmatter.github.io/dark-matter-graph/matrix.html) |
-|:--:|:--:|
-| <a href="https://lsstdarkmatter.github.io/dark-matter-graph/network.html"><img src="static/thumbnail_network.png" width="250"/></a> | <a href="https://lsstdarkmatter.github.io/dark-matter-graph/matrix.html"><img src="static/thumbnail_matrix.png" width="250"/></a> |
+<table>
+  <tr>
+    <td><b><a href=https://lsstdarkmatter.github.io/dark-matter-graph/network.html>Click to see the network diagram</a></b></td>
+    <td><b><a href=https://lsstdarkmatter.github.io/dark-matter-graph/matrix.html>Click to see the adjacency matrix</a></b></td>
+  </tr>
+  <tr/>
+  <tr>
+    <td><a href="https://lsstdarkmatter.github.io/dark-matter-graph/network.html"><img src="static/thumbnail_network.png" width="250"/></a></td>
+    <td><a href="https://lsstdarkmatter.github.io/dark-matter-graph/matrix.html"><img src="static/thumbnail_matrix.png" width="250"/></a></td>
+  </tr>
+  <tr/>
+  <tr>
+    <td colspan="2" align="center"><b><a href=https://docs.google.com/forms/d/e/1FAIpQLSfkUCE7o8cqQQV9PFki484sSqRzelTDEk1SXtwb7I2d4gxxTw/viewform>Click to submit a new idea</a></b></td>
+  </tr>
+</table>
 
 ## Local Installation
 
