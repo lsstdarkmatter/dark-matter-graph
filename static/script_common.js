@@ -32,7 +32,7 @@ const prepare_sidebar_content = function (d_this) {
     ul.selectAll("li")
       .data(d_this.references)
       .enter().append("li")
-      .html(r => "<a href='https://ui.adsabs.harvard.edu/#abs/" + r + "/abstract'>" + r + "</a>");
+      .html(r => "<a href='https://ui.adsabs.harvard.edu/#abs/" + r.ads + "/abstract'>" + r.text + "</a>");
   }
 };
 
