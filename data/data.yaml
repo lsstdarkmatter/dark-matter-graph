@@ -180,6 +180,10 @@ measurements:
       lensing shear map as well as a catalog of galaxy clusters.
   - key: wl_shear
     label: Position-shear correlation
+    description: >-
+      Cross-correlation of the shear field with the galaxy density
+      field. (Can someone add content about how this probes
+      fundamental characteristics of dark matter?)
   - key: microlens
     label: Stellar microlensing
     description: >-
