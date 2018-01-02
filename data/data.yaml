@@ -132,7 +132,7 @@ measurements:
       the Milky Way. In addition, it will be sensitive to the
       satellite populations of other nearby galaxies.
     followup: [spectroscopy]
-    references: [2014ApJ...795L..13H]
+    references: [2008ApJ...686..279K,2008ApJ...688..277T,2009AJ....137..450W,2014ApJ...795L..13H]
   - key: stream_gaps
     label: Gaps in stellar streams
     description: >-
@@ -143,6 +143,7 @@ measurements:
       detectable by LSST. LSST will detect and measure stellar streams
       at much larger radii.
     followup: spectroscopy, proper motion
+    references: [2015MNRAS.454.3542E,2016MNRAS.463..102E,2017MNRAS.470...60E]
   - key: flux_ratio
     label: Strong lens flux ratio anomalies
     description: >-
@@ -161,15 +162,21 @@ measurements:
       gravitational field of the Milky Way. By modeling the orbits of
       streams it is possible to probe the density profile and
       triaxiality of the Milky Way dark matter halo.
-  - key: cluster_sl
-    label: Cluster strong lens model
+    references: [2016MNRAS.461.1590E]
+  - key: galaxy_sl
+    label: Galaxy-galaxy strong lensing
     description: >-
       Lens mass modeling from strong lensing arcs can be used to probe
       the distribution of substructure in a small annulus around the
       Einstein radius of the lens. This can be used to statistically
       constrain the abundance of dark matter substructure. LSST will
       find strongly lensed arcs suitable for this study.
-    references: [2009MNRAS.400.1583V]
+    references: [2009MNRAS.400.1583V,2017MNRAS.471.2224N]
+  - key: cluster_sl
+    label: Cluster strong lensing
+    description: >-
+      Mass modeling of galaxy cluster strong lenses is sensitive to
+      the inner dark matter density profile.
   - key: cluster_wl
     label: Cluster weak lens modeling
     description: >-
@@ -254,6 +261,7 @@ measurements:
       stellar kinematics and the local distribution of dark
       matter. This is an important normalization for direct detection
       dark matter experiments.
+    references: [2017arXiv170404499H]
   - key: halo_kinematics
     label: Halo stellar kinematics
     description: >-
@@ -262,6 +270,7 @@ measurements:
       matter halo at large radius. This will help constrain the halo
       profile and triaxiality.
     followup: spectroscopy
+    references: [2014ApJ...794..151L]
   - key: sn_lensing
     label: Supernova lensing
     description: >-
@@ -345,8 +354,8 @@ Paths:
   - path: [wdm, min_halo_mass, sat_lum_fn, pstars]
   - path: [wdm, min_halo_mass, sat_lum_fn, pgalaxies]
   - path: [wdm, min_halo_mass, stream_gaps, pstars]
-  - path: [wdm, min_halo_mass, flux_ratio, iclusters]
   - path: [wdm, min_halo_mass, flux_ratio, igalaxies]
+  - path: [wdm, min_halo_mass, galaxy_sl, igalaxies]
   - path: [wdm, min_halo_mass, nanolens, istars]
   - path: [wdm, min_halo_mass, nanolens, pstars]
   - path: [wdm, min_halo_mass, lyman_alpha, igalaxies]
