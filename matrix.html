@@ -5,7 +5,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title>LSST Dark Matter Graphic: Matrix View</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" type="text/css">
-  <link rel="stylesheet" href="style_common.css" type="text/css">
+  <link rel="stylesheet" href="static/style_common.css" type="text/css">
   <style>
     .label {
       text-anchor: end;
@@ -46,13 +46,14 @@
     <a href="index.html">Home</a> |
     <a href="javascript:void load_instruction('matrix');">Instructions</a> |
     <a href="network.html">Network diagram</a> |
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfkUCE7o8cqQQV9PFki484sSqRzelTDEk1SXtwb7I2d4gxxTw/viewform">Submit idea</a> |
     <a href="https://github.com/lsstdarkmatter/dark-matter-graph">GitHub Repo</a>
   </div>
   <div>
     <svg id="canvas"></svg>
   </div>
   <script src="https://d3js.org/d3.v4.min.js"></script>
-  <script src="script_common.js"></script>
+  <script src="static/script_common.js"></script>
   <script>
 
     load_instruction("matrix");
@@ -66,7 +67,7 @@
         if (i) acc.push(d.categories[i - 1].count + acc[acc.length - 1]); return acc;
       }, [0]);
 
-      const dims = { 'cell_side': 20, 'label_top': 170, 'label_left': 200, 'margin_top': 30, 'label_pad': 5, 'lw': 2, 'lw_cat': 8 };
+      const dims = { 'cell_side': 18, 'label_top': 170, 'label_left': 200, 'margin_top': 30, 'label_pad': 6, 'lw': 2, 'lw_cat': 8 };
 
       dims.side = dims.cell_side * d.nodes.length + dims.lw * d.nodes.length + dims.lw_cat * (d.categories.length - 1);
       dims.cell_step = dims.cell_side + dims.lw;
