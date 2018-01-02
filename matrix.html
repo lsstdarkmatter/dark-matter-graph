@@ -7,15 +7,19 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" type="text/css">
   <link rel="stylesheet" href="static/style_common.css" type="text/css">
   <style>
+    .cat_label {
+      text-anchor: start;
+    }
+
+    .cell,
+    .label {
+      cursor: pointer;
+    }
+
     .label {
       text-anchor: end;
       font-size: 13px;
       dominant-baseline: middle;
-      cursor: pointer;
-    }
-
-    .cat_label {
-      text-anchor: start;
     }
 
     .background {
@@ -26,16 +30,15 @@
       fill: #ddd;
     }
 
-    .cell {
-      cursor: pointer;
-    }
-
     .line {
       fill: #fff;
     }
 
-    .label.active,
     .label.locked {
+      fill: #9467bd;
+    }
+
+    .label.active {
       fill: #d62728;
     }
   </style>
@@ -106,8 +109,8 @@
           col_label = col_labels.filter((_, j) => j == d_this.x);
           cell = cell_objs.filter(c => c == d_this);
         }
-        row_label.classed("active" + (to_lock ? " locked" : ""), true);
-        col_label.classed("active" + (to_lock ? " locked" : ""), true);
+        row_label.classed(to_lock ? " locked" : "active", true);
+        col_label.classed(to_lock ? " locked" : "active", true);
         cell.attr("fill", c => d3.schemeCategory20[c.c - 1]);
         if (to_lock) cell.classed("locked", true);
       };
@@ -120,9 +123,9 @@
       }
 
       const itemclick = function (type, d_this, i) {
-        if (type != "cell") show_sidebar(d_this); else hide_sidebar();
         clearall(true);
         highlight(type, d_this, i, true);
+        if (type != "cell") show_sidebar(d_this); else hide_sidebar();
         d3.event.stopPropagation();
       }
 
