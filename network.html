@@ -122,9 +122,9 @@
       }
 
       const itemclick = function (d_this, need_sidebar = false) {
-        clearall(true);
+        clearall(!d3.event.ctrlKey);
         highlight(d_this, true);
-        if (need_sidebar) show_sidebar(d_this); else hide_sidebar();
+        if (need_sidebar) show_sidebar(d_this, false, d3.event.ctrlKey); else hide_sidebar();
         d3.event.stopPropagation();
       }
 

@@ -18,12 +18,12 @@ const hide_tooltip = function () {
 }
 
 
+var sidebar_has_instruction;
 const sidebar = d3.select("body").append("div")
   .attr("class", "sidebar");
 
 
 const prepare_sidebar_content = function (d_this) {
-  sidebar.html("");
   sidebar.append("h2").text(d_this.label);
   sidebar.append("div").text(d_this.description ? d_this.description : "Hmm... I wonder what this means?");
   if (d_this.references) {
@@ -36,13 +36,15 @@ const prepare_sidebar_content = function (d_this) {
   }
 };
 
-const show_sidebar = function (d_this, raw_html = false) {
+const show_sidebar = function (d_this, raw_html = false, append = false) {
   sidebar.transition()
-    .duration(100)
+    .duration(200)
     .style("left", "0");
-  if (raw_html) sidebar.html(d_this);
+  if (sidebar_has_instruction || !append) sidebar.html("");
+  if (raw_html) sidebar.html(sidebar.html() + d_this);
   else prepare_sidebar_content(d_this);
   sidebar.selectAll("*").on("click", () => { d3.event.stopPropagation(); });
+  sidebar_has_instruction = false;
 }
 
 const hide_sidebar = function () {
@@ -51,11 +53,12 @@ const hide_sidebar = function () {
     .style("left", "-300px");
 }
 
-sidebar.on("click", hide_sidebar);
-
 const load_instruction = function (name) {
   d3.text("static/instruction_" + name + ".html", function (error, ht) {
     if (error) throw error;
     show_sidebar(ht, true);
+    sidebar_has_instruction = true;
   });
 };
+
+sidebar.on("click", hide_sidebar);

@@ -123,9 +123,9 @@
       }
 
       const itemclick = function (type, d_this, i) {
-        clearall(true);
+        clearall(!d3.event.ctrlKey);
         highlight(type, d_this, i, true);
-        if (type != "cell") show_sidebar(d_this); else hide_sidebar();
+        if (type != "cell") show_sidebar(d_this, false, d3.event.ctrlKey); else hide_sidebar();
         d3.event.stopPropagation();
       }
 
