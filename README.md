@@ -1,13 +1,16 @@
 # LSST Dark Matter Graphic
 
-This repo hosts a web application that uses [D3.js](https://d3js.org/) to implement the LSST "dark matter graphic", as proposed in [LSSTDESC/LSSTDarkMatter](https://github.com/LSSTDESC/LSSTDarkMatter)
-(see [#9](https://github.com/LSSTDESC/LSSTDarkMatter/issues/9),
+This web application uses [D3.js](https://d3js.org/) to visualize the intertwined elements about probing the nature of dark matter with LSST.
+
+The design concept largely comes from coversations between [@kadrlica](https://github.com/kadrlica), [@aimalz](https://github.com/aimalz), and [@yymao](https://yymao.github.io/) during the 2017 LSST DESC Sprint Week at ANL (see the discussions in
+[#9](https://github.com/LSSTDESC/LSSTDarkMatter/issues/9),
 [#10](https://github.com/LSSTDESC/LSSTDarkMatter/issues/10),
 [#11](https://github.com/LSSTDESC/LSSTDarkMatter/issues/11), and
-[#13](https://github.com/LSSTDESC/LSSTDarkMatter/issues/13)).
+[#13](https://github.com/LSSTDESC/LSSTDarkMatter/issues/13) 
+in [LSSTDESC/LSSTDarkMatter](https://github.com/LSSTDESC/LSSTDarkMatter)), and also their conversations with
+[@sazabi4](https://github.com/sazabi4) and [@wadawson](https://github.com/wadawson). 
 
-This design concept comes largely from coversations between [@kadrlica](https://github.com/kadrlica), [@aimalz](https://github.com/aimalz), [@yymao](https://github.com/yymao).
-Web app development is led by [@yymao](https://yymao.github.io/) with content curated by [@kadrlica](https://github.com/kadrlica).
+Current web app development is led by [@yymao](https://yymao.github.io/) with content curated by [@kadrlica](https://github.com/kadrlica). We hope to see more contribution from the community. 
 
 <table>
   <tr>
