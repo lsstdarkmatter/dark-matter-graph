@@ -2,24 +2,24 @@
 
 This web application uses [D3.js](https://d3js.org/) to visualize the intertwined elements about probing the nature of dark matter with LSST.
 
-The design concept largely comes from coversations between 
-[@kadrlica](https://github.com/kadrlica), 
-[@aimalz](https://github.com/aimalz), and 
-[@yymao](https://yymao.github.io/) 
+The design concept largely comes from coversations between
+[@kadrlica](https://github.com/kadrlica),
+[@aimalz](https://github.com/aimalz), and
+[@yymao](https://yymao.github.io/)
 during the 2017 LSST DESC Sprint Week at ANL (see the discussions in
 [#9](https://github.com/LSSTDESC/LSSTDarkMatter/issues/9),
 [#10](https://github.com/LSSTDESC/LSSTDarkMatter/issues/10),
 [#11](https://github.com/LSSTDESC/LSSTDarkMatter/issues/11),
 [#13](https://github.com/LSSTDESC/LSSTDarkMatter/issues/13), and
 [this table](https://github.com/LSSTDESC/LSSTDarkMatter/blob/master/table.md) in
-[LSSTDESC/LSSTDarkMatter](https://github.com/LSSTDESC/LSSTDarkMatter)), 
+[LSSTDESC/LSSTDarkMatter](https://github.com/LSSTDESC/LSSTDarkMatter)),
 and also their conversations with
-[@sazabi4](https://github.com/sazabi4) and 
-[@wadawson](https://github.com/wadawson). 
+[@sazabi4](https://github.com/sazabi4) and
+[@wadawson](https://github.com/wadawson).
 
-Current web app development is led by [@yymao](https://yymao.github.io/) 
-with content curated by [@kadrlica](https://github.com/kadrlica). 
-We hope to see more contribution from the community. 
+Current web app development is led by [@yymao](https://yymao.github.io/)
+with content curated by [@kadrlica](https://github.com/kadrlica).
+We hope to see more contribution from the community.
 
 <table>
   <tr>
@@ -46,13 +46,13 @@ Below are local installation instructions for developers.
    git clone https://github.com/lsstdarkmatter/dark-matter-graph.git
    cd dark-matter-graph
    ```
-   or update it if you already have a local clone:
+   Or update your local clone if you already have one:
    ```
    cd dark-matter-graph
    git pull
    ```
 
-2. Edit `data/data.yaml`, and then convert it to the json file by running:
+2. (Optional) Edit `data/data.yaml`, and then convert it to the json file by running:
    ```
    data/prepare_data.py
    ```
@@ -63,15 +63,8 @@ Below are local installation instructions for developers.
 
 3. Start a http server:
    ```
-   python -m http.server
+   ./server.py
    ```
-   Or, if using Python2:
-   ```
-   python2 -m SimpleHTTPServer
-   ```
-
-4. Direct your browser to the URL the above command returns, or if it returns `Serving HTTP on X.X.X.X port YYYY`,
-   direct your browser to http://X.X.X.X:YYYY/ (usually it would be http://0.0.0.0:8000/).
-
-   _Note: if you get an `OSError: [Errno 98] Address already in use`, add some 4- or 5-digit numbers after the command, e.g., `python -m http.server 12345`_.
-
+   Direct your browser to the URL the above command returns.
+   Press `ctrl` + `c` to exit
+   (you may need to press `ctrl` + `c` several times if you use Python 2 due to a Python 2 bug).
