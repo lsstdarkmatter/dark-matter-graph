@@ -65,5 +65,3 @@ Below are local installation instructions for developers.
    ```
    ./server.py
    ```
-   Direct your browser to the URL the above command returns.
-   Press `ctrl` + `c` to exit.
