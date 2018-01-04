@@ -123,9 +123,10 @@
       }
 
       const itemclick = function (type, d_this, i) {
-        clearall(!d3.event.ctrlKey);
+        const ctrl_pressed = d3.event.ctrlKey || d3.event.metaKey;
+        clearall(!ctrl_pressed);
         highlight(type, d_this, i, true);
-        if (type != "cell") show_sidebar(d_this, false, d3.event.ctrlKey); else hide_sidebar();
+        if (type != "cell") show_sidebar(d_this, false, ctrl_pressed); else hide_sidebar();
         d3.event.stopPropagation();
       }
 
