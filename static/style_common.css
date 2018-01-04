@@ -50,5 +50,6 @@ div.sidebar {
 	width: 260px;
 	padding: 20px;
   background: #c5b0d5;
-  opacity: 0.9;
+	opacity: 0.9;
+	overflow-y: auto;
 }
