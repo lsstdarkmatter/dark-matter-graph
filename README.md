@@ -61,10 +61,9 @@ Below are local installation instructions for developers.
    _Note: this step is slow because it connects to ADS online to resolve references.
    To speed things up for testing purposes, add option `--no-ads` to the command._
 
-3. Start a http server:
+3. Start a Python http server:
    ```
    ./server.py
    ```
    Direct your browser to the URL the above command returns.
-   Press `ctrl` + `c` to exit
-   (you may need to press `ctrl` + `c` several times if you use Python 2 due to a Python 2 bug).
+   Press `ctrl` + `c` to exit.
