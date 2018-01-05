@@ -9,25 +9,32 @@ from contextlib import closing
 from multiprocessing import Process
 
 try:
-    from http.server import SimpleHTTPRequestHandler, HTTPServer
+    from http.server import HTTPServer, SimpleHTTPRequestHandler
 except ImportError:
-    from SimpleHTTPServer import SimpleHTTPRequestHandler, HTTPServer
-
-
-_ADDRESS = '127.0.0.1'
+    from BaseHTTPServer import HTTPServer
+    from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 
 class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
-    protocol_version = 'HTTP/1.1'
     def address_string(self):
         return self.client_address[0]
 
+    def finish(self):
+        if not self.wfile.closed:
+            try:
+                self.wfile.flush()
+            except socket.error:
+                self.wfile._wbuf = []
+                self.wfile._wbuf_len = 0
+        self.wfile.close()
+        self.rfile.close()
 
-def find_open_ports():
+
+def find_open_port():
     for port in range(8887, 8080, -1):
         with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
             try:
-                s.bind((_ADDRESS, port))
+                s.bind(('', port))
             except socket.error:
                 pass
             else:
@@ -35,19 +42,21 @@ def find_open_ports():
 
 
 def serve_http(port):
-    with open(os.devnull, "w") as devnull:
+    with open(os.devnull, 'w') as devnull:
+        sys.stdout = devnull
         sys.stderr = devnull
         try:
-            httpd = HTTPServer((_ADDRESS, port), MyHTTPRequestHandler)
+            httpd = HTTPServer(('', port), MyHTTPRequestHandler)
             httpd.serve_forever()
         finally:
+            sys.stdout = sys.__stdout__
             sys.stderr = sys.__stderr__
             httpd.server_close()
 
 
 def main(port=None, browser=True, **kwargs):
-    port = port or find_open_ports()
-    url = 'http://{}:{}'.format(_ADDRESS, port)
+    port = port or find_open_port()
+    url = 'http://127.0.0.1:{}'.format(port)
 
     p = Process(target=serve_http, args=(port,))
     p.start()

@@ -65,3 +65,6 @@ Below are local installation instructions for developers.
    ```
    ./server.py
    ```
+   If the page loads slowly, or does not load the most up-to-date version,
+   try pressing `ctrl` + `shift` + `R` (or `cmd` + `shift` + `R` on a Mac)
+   in your browser.
