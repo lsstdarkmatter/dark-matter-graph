@@ -9,17 +9,16 @@ from contextlib import closing
 from multiprocessing import Process
 
 try:
-    from http.server import SimpleHTTPRequestHandler
-    from socketserver import TCPServer
+    from http.server import SimpleHTTPRequestHandler, HTTPServer
 except ImportError:
-    from SimpleHTTPServer import SimpleHTTPRequestHandler
-    from SocketServer import TCPServer
+    from SimpleHTTPServer import SimpleHTTPRequestHandler, HTTPServer
 
 
 _ADDRESS = '127.0.0.1'
 
 
 class MyHTTPRequestHandler(SimpleHTTPRequestHandler):
+    protocol_version = 'HTTP/1.1'
     def address_string(self):
         return self.client_address[0]
 
@@ -39,7 +38,7 @@ def serve_http(port):
     with open(os.devnull, "w") as devnull:
         sys.stderr = devnull
         try:
-            httpd = TCPServer((_ADDRESS, port), MyHTTPRequestHandler)
+            httpd = HTTPServer((_ADDRESS, port), MyHTTPRequestHandler)
             httpd.serve_forever()
         finally:
             sys.stderr = sys.__stderr__
