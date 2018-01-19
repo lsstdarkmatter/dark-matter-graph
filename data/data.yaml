@@ -221,7 +221,7 @@ measurements:
       (RGB). LSST could measure the relative abudances of RGB stars
       and stars in other evolutionary phases in resolved stellar
       systems.
-    references: [2014PhRvL.113s1302A]
+    references: [2014PhRvL.113s1302A,2013A&A...558A..12V,2013PhRvL.111w1301V]
   - key: wide_binary
     label: Population of wide-binary stars
     description: >-
@@ -289,108 +289,88 @@ measurements:
     followup: spectroscopy
 
 targets:
-  - key: istars
-    label: Individual stars
+  - key: stars
+    label: Stars
     description: >-
-      Studies of very rare or extreme stars. Studies of individual
-      stars may require large followup campaigns. For example: wide-binaries
-    references: [2009MNRAS.396L..11Q]
-  - key: pstars
-    label: Population of stars
+      Studies of stars. This includes both populations of stars and
+      individual rare or extreme stars.
+    references: [2009MNRAS.396L..11Q,2014ApJ...794..151L]
+  - key: galaxies
+    label: Galaxies
     description: >-
-      Studies of populations of stars. For example:
-      Milky Way halo dynamics, stellar stream orbits.
-    references: [2014ApJ...794..151L]
-  - key: igalaxies
-    label: Individual galaxies
-    description: >-
-      Studies of very rare or extreme galaxies. Individual galaxy
-      studies may require large followup campaigns. For example: 
-        galaxy-galaxy strong lenses, extreme ultra-diffuse galaxies,
-        extreme ultra-faint galaxies.
-  - key: pgalaxies
-    label: Population of galaxies
-    description: >-
-      Studies of populations of galaxies. For example:
-      satellite galaxy luminosity function, galaxy-shear correlations.
+      Studies of galaxies. This includes both populations of galaxies
+      and individual rare or extreme galaxies. For example:
+      galaxy-galaxy strong lenses, extreme ultra-diffuse galaxies,
+      extreme ultra-faint galaxies. satellite galaxy luminosity
+      function, galaxy-shear correlations.
     references: [2008ApJ...686..279K]
-  - key: iclusters
-    label: Individual clusters
+  - key: clusters
+    label: Clusters
     description: >-
-      Studies of very rare or extreme galaxy clusters. For example:
-      the Bullet cluster.
-    references: [2006ApJ...648L.109C]
-  - key: pclusters
-    label: Population of clusters
+      Studies of galaxy clusters. This includes both populations of galaxies
+      and individual rare or extreme galaxies. For example:
+      statistical measurements of the splash back radius, the Bullet cluster.
+    references: [2006ApJ...648L.109C,2017ApJ...841...18B]
+  - key: transients
+    label: Transients
     description: >-
-      Studies of populations of galaxy clusters. For example:
-      statistical measurements of the splash back radius.
-    references: [2017ApJ...841...18B]
-  - key: itransients
-    label: Individual transients
-    description: >-
-      Studies of very rare or extreme transient sources. For example:
-      cluster microlensing.
+      Studies of transient sources. This includes both populations of galaxies
+      and individual rare or extreme galaxies. For example:
+      cluster microlensing, supernova constraints on primordial black holes.
     references: [2017arXiv170610279K]
-  - key: ptransients
-    label: Population of transients
-    description: >-
-      Studies of populations of transient sources. For example:
-      supernova constraints on primordial black holes.
-    references: [2017arXiv171202240Z]
 
 Paths:
   # WDM: Halo abundance
-  - path: [wdm, subhalo_abundance, sat_lum_fn, pstars]
-  - path: [wdm, subhalo_abundance, sat_lum_fn, pgalaxies]
-  - path: [wdm, subhalo_abundance, stream_gaps, pstars]
-  - path: [wdm, subhalo_abundance, flux_ratio, iclusters]
-  - path: [wdm, subhalo_abundance, flux_ratio, igalaxies]
-  - path: [wdm, subhalo_abundance, nanolens, istars]
-  - path: [wdm, subhalo_abundance, nanolens, pstars]
-  - path: [wdm, subhalo_abundance, udgs, pgalaxies]
+  - path: [wdm, subhalo_abundance, sat_lum_fn, stars]
+  - path: [wdm, subhalo_abundance, sat_lum_fn, galaxies]
+  - path: [wdm, subhalo_abundance, stream_gaps, stars]
+  - path: [wdm, subhalo_abundance, flux_ratio, clusters]
+  - path: [wdm, subhalo_abundance, flux_ratio, galaxies]
+  - path: [wdm, subhalo_abundance, nanolens, stars]
+  - path: [wdm, subhalo_abundance, nanolens, stars]
+  - path: [wdm, subhalo_abundance, udgs, galaxies]
 
   # WDM: Minimum halo mass
-  - path: [wdm, min_halo_mass, sat_lum_fn, pstars]
-  - path: [wdm, min_halo_mass, sat_lum_fn, pgalaxies]
-  - path: [wdm, min_halo_mass, stream_gaps, pstars]
-  - path: [wdm, min_halo_mass, flux_ratio, igalaxies]
-  - path: [wdm, min_halo_mass, galaxy_sl, igalaxies]
-  - path: [wdm, min_halo_mass, nanolens, istars]
-  - path: [wdm, min_halo_mass, nanolens, pstars]
-  - path: [wdm, min_halo_mass, lyman_alpha, igalaxies]
+  - path: [wdm, min_halo_mass, sat_lum_fn, stars]
+  - path: [wdm, min_halo_mass, sat_lum_fn, galaxies]
+  - path: [wdm, min_halo_mass, stream_gaps, stars]
+  - path: [wdm, min_halo_mass, flux_ratio, galaxies]
+  - path: [wdm, min_halo_mass, galaxy_sl, galaxies]
+  - path: [wdm, min_halo_mass, nanolens, stars]
+  - path: [wdm, min_halo_mass, nanolens, stars]
+  - path: [wdm, min_halo_mass, lyman_alpha, galaxies]
 
   # SIDM: Halo density
-  - path: [sidm, halo_density, stream_orbits, pstars]
-  - path: [sidm, halo_density, cluster_sl, iclusters]
-  - path: [sidm, halo_density, cluster_sl, pclusters]
-  - path: [sidm, halo_density, halo_kinematics, pstars]
-  - path: [sidm, halo_density, splashback, pclusters]
-  - path: [sidm, halo_density, cluster_centroid, iclusters]
-  - path: [sidm, halo_density, cluster_centroid, pclusters]
-  - path: [sidm, halo_density, local_kinematics, pstars]
+  - path: [sidm, halo_density, stream_orbits, stars]
+  - path: [sidm, halo_density, cluster_sl, clusters]
+  - path: [sidm, halo_density, cluster_sl, clusters]
+  - path: [sidm, halo_density, halo_kinematics, stars]
+  - path: [sidm, halo_density, splashback, clusters]
+  - path: [sidm, halo_density, cluster_centroid, clusters]
+  - path: [sidm, halo_density, cluster_centroid, clusters]
+  - path: [sidm, halo_density, local_kinematics, stars]
 
   # SIDM: Halo triaxiality
-  - path: [sidm, halo_triaxiality, stream_orbits, pstars]
-  - path: [sidm, halo_triaxiality, cluster_wl, iclusters]
-  - path: [sidm, halo_triaxiality, cluster_wl, pclusters]
-  - path: [sidm, halo_triaxiality, wl_shear, pgalaxies]
-  - path: [sidm, halo_triaxiality, halo_kinematics, pstars]
+  - path: [sidm, halo_triaxiality, stream_orbits, stars]
+  - path: [sidm, halo_triaxiality, cluster_wl, clusters]
+  - path: [sidm, halo_triaxiality, cluster_wl, clusters]
+  - path: [sidm, halo_triaxiality, wl_shear, galaxies]
+  - path: [sidm, halo_triaxiality, halo_kinematics, stars]
 
   # Fuzzy: 
-  - path: [fuzzy, min_halo_mass, stream_gaps, pstars]
-  - path: [fuzzy, min_halo_mass, flux_ratio, iclusters]
-  - path: [fuzzy, min_halo_mass, flux_ratio, igalaxies]
-  - path: [fuzzy, halo_density, sn_lensing, itransients]
+  - path: [fuzzy, min_halo_mass, stream_gaps, stars]
+  - path: [fuzzy, min_halo_mass, flux_ratio, clusters]
+  - path: [fuzzy, min_halo_mass, flux_ratio, galaxies]
+  - path: [fuzzy, halo_density, sn_lensing, transients]
 
   # ALPs:
-  - path: [alp, energy_loss, wdlf, pstars]
-  - path: [alp, energy_loss, rgb,  pstars]
-  - path: [alp, energy_loss, rgb,  igalaxies]
+  - path: [alp, energy_loss, wdlf, stars]
+  - path: [alp, energy_loss, rgb,  stars]
+  - path: [alp, energy_loss, rgb,  galaxies]
 
   # MACHOs:
-  - path: [macho, quantization, microlens, ptransients]
-  - path: [macho, quantization, microlens, itransients]
-  - path: [macho, quantization, wide_binary, pstars]
-  - path: [macho, quantization, wide_binary, istars]
-  - path: [macho, quantization, sn_lensing, itransients]
+  - path: [macho, quantization, microlens, transients]
+  - path: [macho, quantization, microlens, transients]
+  - path: [macho, quantization, wide_binary, stars]
+  - path: [macho, quantization, wide_binary, stars]
+  - path: [macho, quantization, sn_lensing, transients]
