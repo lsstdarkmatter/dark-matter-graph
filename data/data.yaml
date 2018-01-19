@@ -221,7 +221,7 @@ measurements:
       (RGB). LSST could measure the relative abudances of RGB stars
       and stars in other evolutionary phases in resolved stellar
       systems.
-    references: [2014PhRvL.113s1302A]
+    references: [2014PhRvL.113s1302A,2013A&A...558A..12V]
   - key: wide_binary
     label: Population of wide-binary stars
     description: >-
