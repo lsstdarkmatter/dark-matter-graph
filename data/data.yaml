@@ -48,7 +48,7 @@ models:
     description: >-
         Dark matter possessing a long-range self-interaction cross
         section.
-    references: [2000PhRvL..84.3760S]
+    references: [2000PhRvL..84.3760S,2012MNRAS.423.3740V]
   #- key: ann
   #  label: Annihilating dark matter
   #- key: decay
@@ -107,7 +107,7 @@ probes:
     label: Dark matter quantization
     description: >-
       If a significant fraction of dark matter resides in macroscopic
-      compact objects then it can have measureable effects through
+      compact objects then it can have measurable effects through
       gravitational lensing and the disruption of weakly bound
       gravitational systems. This macroscopic "quantization" could
       occur as the fundamental unit of dark matter (e.g., primordial
@@ -208,11 +208,11 @@ measurements:
   - key: wdlf
     label: White dwarf luminosity function
     description: >-
-      Anomalous cooling mechanisms would produce a measureable change
+      Anomalous cooling mechanisms would produce a measurable change
       in the luminosity function of white dwarf stars. LSST will be
       able to detect faint white dwarfs through color cuts and proper
       motions.
-    references: [2008ApJ...682L.109I]
+    references: [2006AJ....131..571H,2008ApJ...682L.109I]
   - key: rgb
     label: Red Giant Branch Populations
     description: >-
