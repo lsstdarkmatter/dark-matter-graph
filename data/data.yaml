@@ -42,13 +42,13 @@ models:
     description: >-
       Dark matter that behaves like a thermal particle with mass less
       than 1 GeV.
-    references: [1994PhRvL..72...17D]
+    references: [1994PhRvL..72...17D,2012MNRAS.420.2318L]
   - key: sidm
     label: Self-interacting dark matter
     description: >-
         Dark matter possessing a long-range self-interaction cross
         section.
-    references: [2000PhRvL..84.3760S,2012MNRAS.423.3740V]
+    references: [2000PhRvL..84.3760S,2012MNRAS.423.3740V,2013MNRAS.430...81R]
   #- key: ann
   #  label: Annihilating dark matter
   #- key: decay
@@ -133,6 +133,12 @@ measurements:
       satellite populations of other nearby galaxies.
     followup: [spectroscopy]
     references: [2008ApJ...686..279K,2008ApJ...688..277T,2009AJ....137..450W,2014ApJ...795L..13H]
+  - key: sat_density
+    label: Satellite stellar density
+    description: >- 
+      Massive compact dark matter could alter the distribution of stars in dwarf galaxies through dynmical heating.
+    followup: [spectroscopy]
+    references: [2016ApJ...824L..31B,2017ApJ...838....8L,2017PhRvL.119d1102K]
   - key: stream_gaps
     label: Gaps in stellar streams
     description: >-
@@ -143,7 +149,7 @@ measurements:
       detectable by LSST. LSST will detect and measure stellar streams
       at much larger radii.
     followup: spectroscopy, proper motion
-    references: [2015MNRAS.454.3542E,2016MNRAS.463..102E,2017MNRAS.470...60E]
+    references: [2015MNRAS.454.3542E,2016MNRAS.463..102E,2016PhRvL.116l1301B,2017MNRAS.470...60E]
   - key: flux_ratio
     label: Strong lens flux ratio anomalies
     description: >-
@@ -155,6 +161,7 @@ measurements:
       multiple strong lenses and will monitor them for time
       variability (variable background sources can also manifest as
       flux ratio anomalies).
+    references: [2002ApJ...572...25D]
   - key: stream_orbits
     label: Stellar stream orbits
     description: >-
@@ -162,7 +169,7 @@ measurements:
       gravitational field of the Milky Way. By modeling the orbits of
       streams it is possible to probe the density profile and
       triaxiality of the Milky Way dark matter halo.
-    references: [2016MNRAS.461.1590E]
+    references: [2010ApJ...714..229L,2016MNRAS.461.1590E]
   - key: galaxy_sl
     label: Galaxy-galaxy strong lensing
     description: >-
@@ -177,6 +184,7 @@ measurements:
     description: >-
       Mass modeling of galaxy cluster strong lenses is sensitive to
       the inner dark matter density profile.
+    references: [2004ApJ...604...88S]
   - key: cluster_wl
     label: Cluster weak lens modeling
     description: >-
@@ -198,13 +206,13 @@ measurements:
       will be able to measure the lightcurves of billions of stars
       over long time windows. The use of micorlensing parallax will
       increase the sensitivity to ultra-long duration events.
-    references: [2016MNRAS.458.3012W]
+    references: [1997ApJ...486..697A, 2007A&A...469..387T, 2011MNRAS.416.2949W, 2016MNRAS.458.3012W]
   - key: nanolens
     label: Stellar nanolensing
     description: >-
       Gravitational nanolensing could potentially probe subsolar mass
       dark matter halos.
-    references: [2010ApJ...724..400C]
+    references: [2010ApJ...724..400C, 2011ApJ...729...49E]
   - key: wdlf
     label: White dwarf luminosity function
     description: >-
@@ -230,7 +238,8 @@ measurements:
       abundance of massive compact perturbers. Will LSST should be
       able to find candidate wide-binaries through color magnitude
       cuts?
-    followup: deep spectroscopy
+    references: [2004ApJ...601..311Y,2009MNRAS.396L..11Q]
+    followup: spectroscopy
   - key: cluster_centroid
     label: Cluster centroid offsets
     description: >-
@@ -247,12 +256,14 @@ measurements:
     description: >- 
       The splashback radius of galaxy clusters is a probe of dark
       matter halo density profiles.
+    references: [2017ApJ...841...18B,2017arXiv171006808C]
   - key: lyman_alpha
     label: High-z quasars
     description: >- 
       By finding z > 2 quasars and close quasar pairs, LSST can help
       test small scale structure of dark matter in the high-redshift
       universe.
+    references: [2009JCAP...05..012B]
     followup: Deep spectroscopy
   - key: local_kinematics
     label: Local stellar kinematics
@@ -277,6 +288,7 @@ measurements:
       LSST can search for anomalous magnification of supernova via
       gravitational lensing.  This can be used to test microlensing
       from compact dark matter and caustics from fuzzy dark matter .
+    references: [2017arXiv170610281D,2017arXiv170610279K,2017arXiv171202240Z]
     followup: spectroscopy
   - key: udgs
     label: Ultra-diffuse galaxies
@@ -369,6 +381,7 @@ Paths:
   - path: [alp, energy_loss, rgb,  galaxies]
 
   # MACHOs:
+  - path: [macho, quantization, sat_density, stars]
   - path: [macho, quantization, microlens, transients]
   - path: [macho, quantization, microlens, transients]
   - path: [macho, quantization, wide_binary, stars]
