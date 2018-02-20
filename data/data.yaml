@@ -61,13 +61,25 @@ models:
   - key: macho
     label: Massive compact dark matter
     description: >-
-      Non-baryonic compact dark matter (e.g., primordial black holes, Q-balls, etc.)
+      Non-baryonic compact dark matter (e.g., primordial black holes, Q-balls, etc.). Also includes many classes of composite dark matter.
     references: [1974MNRAS.168..399C,2016PhRvL.116t1301B,1998PhLB..418...46K]
   - key: alp
     label: Axion-like dark matter
     description: >-
       Very light dark matter in the form of axions or axion-like particles
     references: [1977PhRvL..38.1440P,1990PhR...198....1R]
+  - key: ann
+    label: Annihilating dark matter
+    description: >-
+      Dark matter that annihilates to produce high-energy standard model particles (> keV energies). Often this dark matter is assumed to be symmetric.
+    #references: null
+  - key: decay
+    label: Decaying dark matter
+    description: >-
+      Meta-stable dark matter that degays to produce energetic standard model particles.
+    #references: null
+
+# Do we want to add a category for "Strongly interacting"/"Baryon-Scattering" dark matter? This would include complementarity with direct detection experiments.
 
 probes:
   - key: min_halo_mass
@@ -103,8 +115,8 @@ probes:
       flattening, dark matter disks, etc.) would indicate some
       deviation from cold, collisionless dark matter.
     references: [2013MNRAS.430..105P,2013PhRvL.110u1302F]
-  - key: quantization
-    label: Dark matter quantization
+  - key: macho_mass
+    label: MACHO Mass Function
     description: >-
       If a significant fraction of dark matter resides in macroscopic
       compact objects then it can have measurable effects through
@@ -138,7 +150,7 @@ measurements:
     description: >- 
       Massive compact dark matter could alter the distribution of stars in dwarf galaxies through dynmical heating.
     followup: [spectroscopy]
-    references: [2016ApJ...824L..31B,2017ApJ...838....8L,2017PhRvL.119d1102K]
+    references: [2016ApJ...824L..31B,2017ApJ...838....8L,2017PhRvL.119d1102K,2018MNRAS.tmp...64Z]
   - key: stream_gaps
     label: Gaps in stellar streams
     description: >-
@@ -381,9 +393,9 @@ Paths:
   - path: [alp, energy_loss, rgb,  galaxies]
 
   # MACHOs:
-  - path: [macho, quantization, sat_density, stars]
-  - path: [macho, quantization, microlens, transients]
-  - path: [macho, quantization, microlens, transients]
-  - path: [macho, quantization, wide_binary, stars]
-  - path: [macho, quantization, wide_binary, stars]
-  - path: [macho, quantization, sn_lensing, transients]
+  - path: [macho, macho_mass, sat_density, stars]
+  - path: [macho, macho_mass, microlens, transients]
+  - path: [macho, macho_mass, microlens, transients]
+  - path: [macho, macho_mass, wide_binary, stars]
+  - path: [macho, macho_mass, wide_binary, stars]
+  - path: [macho, macho_mass, sn_lensing, transients]
