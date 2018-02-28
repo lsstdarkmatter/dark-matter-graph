@@ -81,7 +81,8 @@ models:
     label: Baryon scattering dark matter
     description: >-
       Dark matter that scatters with standard model particles and
-      deposites some energy in direct detection experiments.
+      deposites some energy in direct detection experiments of the
+      universe (at high scattering cross sections).
 
 # Do we want to add a category for "Strongly interacting"/"Baryon-Scattering" dark matter? This would include complementarity with direct detection experiments.
 
@@ -137,19 +138,7 @@ probes:
       thermal energy. This anomalous energy loss mechanism would lead
       to observable changes in the evolution of stars.
     references: [1990PhR...198....1R,2008LNP...741...51R]
-  - key: energetic_particles
-    label: Energetic particles
-    description: >-
-      If dark matter is a massive particle then signatures of decay or
-      annihilation can be detected through the production of energy
-      photons or charged particles.
-    references: [2000RPPh...63..793B]
-  - key: energy_deposition
-    label: Energy deposition
-    description: >-
-      Dark matter that scatters off of baryons could be detected by
-      the residual energy deposited in detectors (or the universe).
-    #references: [2000RPPh...63..793B]
+
 
 measurements:
   - key: sat_lum_fn
@@ -418,13 +407,21 @@ Paths:
   - path: [macho, macho_mass, sn_lensing, transients]
 
   # Annihilating
-  - path: [ann, energetic_particles, sat_lum_fn, stars]
-  - path: [ann, energetic_particles, wl_shear, stars]
+  - path: [ann, subhalo_abundance, sat_lum_fn, stars]
+  - path: [ann, subhalo_abundance, sat_lum_fn, galaxies]
+  - path: [ann, halo_density, wl_shear, clusters]
+  - path: [ann, halo_density, local_kinematics, stars]
+  - path: [ann, halo_density, halo_kinematics, stars]
+  - path: [ann, halo_density, cluster_centroid, clusters]
 
   # Decay
-  - path: [decay, energetic_particles, sat_lum_fn, stars]
-  - path: [decay, energetic_particles, wl_shear, stars]
+  - path: [decay, subhalo_abundance, sat_lum_fn, stars]
+  - path: [decay, subhalo_abundance, sat_lum_fn, galaxies]
+  - path: [decay, halo_density, wl_shear, clusters]
+  - path: [decay, halo_density, local_kinematics, stars]
+  - path: [decay, halo_density, halo_kinematics, stars]
+  - path: [decay, halo_density, cluster_centroid, clusters]
 
   # Decay
-  - path: [scatter, energy_deposition, local_kinematics, stars]
-  - path: [scatter, energy_deposition, halo_kinematics, stars]
+  - path: [scatter, halo_density, local_kinematics, stars]
+  - path: [scatter, halo_density, halo_kinematics, stars]
