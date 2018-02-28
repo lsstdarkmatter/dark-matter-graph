@@ -47,7 +47,7 @@ def prepare_data_from_yaml(yaml_file, use_ads):
             node_obj['category'] = i
             node_obj['index'] = j
             node_obj['paths'] = []
-            if 'references' in node_obj:
+            if 'references' in node_obj and node_obj['references']:
                 node_obj['references'] = format_reference(node_obj['references'], use_ads)
             nodes[node_key] = node_obj
 
