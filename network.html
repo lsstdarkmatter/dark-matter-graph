@@ -89,7 +89,8 @@
         c.max_char = Math.max(c.max_char, n.label.length);
       });
 
-      dims = { 'width_per_char': 9, 'wpad_inner': 6, 'wpad': 80, 'height_per_node': 40, 'hpad_min': 10, 'top': 50, 'margin': 20 };
+      const em_in_px = parseFloat(getComputedStyle(document.body).fontSize);
+      dims = { 'width_per_char': Math.ceil(em_in_px*0.6), 'wpad_inner': 4, 'wpad': 80, 'height_per_node': Math.ceil(em_in_px*2)+8, 'hpad_min': 10, 'top': 50, 'margin': 20 };
 
       dims.n_cols = d.categories.length;
       dims.n_rows = Math.max(...d.categories.map(c => c.count));
