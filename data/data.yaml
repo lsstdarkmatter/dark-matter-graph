@@ -49,10 +49,6 @@ models:
         Dark matter possessing a long-range self-interaction cross
         section.
     references: [2000PhRvL..84.3760S,2012MNRAS.423.3740V,2013MNRAS.430...81R]
-  #- key: ann
-  #  label: Annihilating dark matter
-  #- key: decay
-  #  label: Decaying dark matter
   - key: fuzzy
     label: Fuzzy dark matter
     description: >-
@@ -71,13 +67,21 @@ models:
   - key: ann
     label: Annihilating dark matter
     description: >-
-      Dark matter that annihilates to produce high-energy standard model particles (> keV energies). Often this dark matter is assumed to be symmetric.
+      Dark matter that annihilates to produce high-energy standard
+      model particles (> keV energies). Often this dark matter is
+      assumed to be symmetric.
     #references: null
   - key: decay
     label: Decaying dark matter
     description: >-
-      Meta-stable dark matter that degays to produce energetic standard model particles.
+      Meta-stable dark matter that degays to produce energetic
+      standard model particles.
     #references: null
+  - key: scatter
+    label: Baryon scattering dark matter
+    description: >-
+      Dark matter that scatters with standard model particles and
+      deposites some energy in direct detection experiments.
 
 # Do we want to add a category for "Strongly interacting"/"Baryon-Scattering" dark matter? This would include complementarity with direct detection experiments.
 
@@ -133,6 +137,19 @@ probes:
       thermal energy. This anomalous energy loss mechanism would lead
       to observable changes in the evolution of stars.
     references: [1990PhR...198....1R,2008LNP...741...51R]
+  - key: energetic_particles
+    label: Energetic particles
+    description: >-
+      If dark matter is a massive particle then signatures of decay or
+      annihilation can be detected through the production of energy
+      photons or charged particles.
+    references: [2000RPPh...63..793B]
+  - key: energy_deposition
+    label: Energy deposition
+    description: >-
+      Dark matter that scatters off of baryons could be detected by
+      the residual energy deposited in detectors (or the universe).
+    #references: [2000RPPh...63..793B]
 
 measurements:
   - key: sat_lum_fn
@@ -399,3 +416,15 @@ Paths:
   - path: [macho, macho_mass, wide_binary, stars]
   - path: [macho, macho_mass, wide_binary, stars]
   - path: [macho, macho_mass, sn_lensing, transients]
+
+  # Annihilating
+  - path: [ann, energetic_particles, sat_lum_fn, stars]
+  - path: [ann, energetic_particles, wl_shear, stars]
+
+  # Decay
+  - path: [decay, energetic_particles, sat_lum_fn, stars]
+  - path: [decay, energetic_particles, wl_shear, stars]
+
+  # Decay
+  - path: [scatter, energy_deposition, local_kinematics, stars]
+  - path: [scatter, energy_deposition, halo_kinematics, stars]
